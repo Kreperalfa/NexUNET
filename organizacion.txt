@@ -1,0 +1,56 @@
+ESTRUCTURA
+app\
+    Aqui deberia estar las paginas, rutas, layouts, todo lo especifico de una pagina
+
+lib\
+    la logica del programa, todo lo que viene siendo las conexiones a supabase, funciones que se repiten, logica de negocios, validaciones, etc.
+
+components\
+    Aqui va todo lo visual que se pueda reciclar como botones, formularios, modales, etc.
+
+public\
+    los logos, imagenes, iconos, pdfs, todo lo que sea necesario al ejecutar la pagina
+
+env.local
+    aqui se guarda todo lo sensible como la direccion de supabase
+
+papo/
+ ├─ app/                 ← páginas y rutas
+ │   ├─ login/
+ │   │   └─ page.js
+ │   ├─ register/
+ │   │   └─ page.js
+ │   ├─ dashboard/
+ │   │   └─ page.js
+ │   └─ layout.js
+ │
+ ├─ components/          ← UI reutilizable
+ │   ├─ Input.jsx
+ │   ├─ Button.jsx
+ │   └─ Card.jsx
+ │
+ ├─ lib/                 ← lógica, servicios, conexiones
+ │   ├─ supabase.js
+ │   ├─ auth.js
+ │   └─ utils.js
+ │
+ ├─ public/              ← imágenes, logos, archivos estáticos
+ │   └─ logo.png
+ │
+ ├─ styles/              ← estilos globales (si usas CSS/Tailwind)
+ │   └─ globals.css
+ │
+ ├─ .env.local           ← claves privadas
+ ├─ next.config.js
+ ├─ package.json
+ └─ yarn.lock
+
+USAMOS
+JavaScript:
+    Es el lenguaje principal y donde se mueve todo, es la sintaxis para cada parte. Lógica, funciones y conexión a Supabase
+
+React:
+    Es como una biblioteca de fronted, ayuda a trabajar de mejor manera para evitar sobrecargar tantos archivos, si tienes un boton en la pagina funcionara cuando lo quiera cambiar tal vez desconfigure la pagina en general, react ayuda a crear el boton separado de la pagina para poder editarlo y que solo recargue ese apartado. Interfaz, componentes y estado
+
+Next.js:
+    No se aplica como tal en codigo, es la manera en la que se ejecuta el programa segun la organizacion que tenemos. Por eso es tan importante la estructura y distribucion de las carpetas. Estructura, rutas, servidor y organización
