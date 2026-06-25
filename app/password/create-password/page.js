@@ -2,17 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getSupabaseBrowserClient  } from '../../../lib/supabase'
+import { getSupabaseBrowserClient } from '../../../lib/supabase'
 
 export default function CreatePassword() {
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
     const redirigir = useRouter()
 
-    // ✔ Cliente correcto (no global, no duplicado)
-    const supabase = getSupabaseBrowserClient ()
+    const supabase = getSupabaseBrowserClient()
 
-    // ✔ Regex correcto
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
 
     async function handleSave() {
@@ -24,7 +22,14 @@ export default function CreatePassword() {
             return
         }
 
-        redirigir.push('/creacion-perfil')
+        // ✔ Leer flujo aquí, no arriba
+        const flujo = localStorage.getItem("flujo")
+
+        if (flujo === "registro") {
+            redirigir.push("/creacion-perfil")
+        } else {
+            redirigir.push("/dashboard")
+        }
     }
 
     async function manejoCrearPassword() {

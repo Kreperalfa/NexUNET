@@ -3,36 +3,41 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyOtpCode } from "../../lib/auth";
+import { actualizarUltimaSesion } from "../../lib/perfil"; // ← IMPORTANTE
 
 export default function VerifyOtpPage() {
     const [otp, setOtp] = useState("");
     const router = useRouter();
 
-  const handleVerify = async () => {
-    const email = localStorage.getItem("email_registro");
+    const handleVerify = async () => {
+        const email = localStorage.getItem("email_registro");
 
-    const { ok, error } = await verifyOtpCode(email, otp);
+        const { ok, error } = await verifyOtpCode(email, otp);
 
-    if (!ok) {
-      alert(error);
-      return;
-    }
+        if (!ok) {
+            alert(error);
+            return;
+        }
 
-    router.push("/password/create-password");
-  };
+        // ⭐ Aquí el usuario YA está autenticado
+        //    por lo tanto, aquí SÍ debemos actualizar ultimaSesion
+        await actualizarUltimaSesion();
 
-  return (
-    <div>
-      <h1>Ingresa tu código OTP</h1>
+        router.push("/password/create-password");
+    };
 
-      <input
-        type="text"
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        placeholder="Código"
-      />
+    return (
+        <div>
+            <h1>Ingresa tu código OTP</h1>
 
-      <button onClick={handleVerify}>Verificar</button>
-    </div>
-  );
+            <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Código"
+            />
+
+            <button onClick={handleVerify}>Verificar</button>
+        </div>
+    );
 }

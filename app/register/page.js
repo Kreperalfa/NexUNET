@@ -15,6 +15,7 @@ export default function Register() {
         }
         alert("OTP enviado al email");
         localStorage.setItem("email_registro", email);
+        localStorage.setItem("flujo", "registro");
         router.push("/verify-otp");
     };
     return (
