@@ -24,7 +24,7 @@ export default function CreatePassword() {
             return
         }
 
-        redirigir.push('/dashboard')
+        redirigir.push('/creacion-perfil')
     }
 
     async function manejoCrearPassword() {
