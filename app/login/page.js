@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../../lib/auth";
+import { actualizarUltimaSesion } from "../../lib/perfil"; // ← IMPORTANTE
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -16,6 +17,9 @@ export default function Login() {
             alert(error);
             return;
         }
+
+        // ⭐ Aquí el usuario YA inició sesión correctamente
+        await actualizarUltimaSesion();
 
         router.push("/dashboard");
     };

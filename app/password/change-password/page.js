@@ -18,6 +18,8 @@ export default function ChangePassword() {
 
         alert("OTP enviado al email");
         localStorage.setItem("email_registro", email);
+        localStorage.setItem("flujo", "cambio-password");
+
         router.push("/verify-otp");
     };
     return (
