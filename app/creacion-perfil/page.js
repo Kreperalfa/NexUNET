@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { crearPerfilUsuario } from "../../lib/perfil";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 export default function CrearPerfilPage() {
   const [nombre, setNombre] = useState("");
@@ -10,13 +10,10 @@ export default function CrearPerfilPage() {
   const [imagenPerfil, setImagenPerfil] = useState(null);
   const [imagenFondo, setImagenFondo] = useState(null);
   const [mensaje, setMensaje] = useState("");
-  const redirigir = useRouter()
+  const redirigir = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    console.log("FRONTEND → imagenPerfil:", imagenPerfil);
-    console.log("FRONTEND → imagenFondo:", imagenFondo);
 
     const descFinal =
       descripcion.trim() === ""
@@ -36,7 +33,7 @@ export default function CrearPerfilPage() {
     }
 
     setMensaje("Perfil creado correctamente.");
-    redirigir.push('/dashboard')
+    redirigir.push('/dashboard');
   }
 
   return (
@@ -44,7 +41,6 @@ export default function CrearPerfilPage() {
       <h1>Crear Perfil</h1>
 
       <form onSubmit={handleSubmit}>
-        {/* Nombre obligatorio */}
         <div>
           <label>Nombre (obligatorio)</label>
           <input
@@ -55,7 +51,6 @@ export default function CrearPerfilPage() {
           />
         </div>
 
-        {/* Descripción opcional */}
         <div>
           <label>Descripción (opcional)</label>
           <textarea
@@ -64,7 +59,6 @@ export default function CrearPerfilPage() {
           />
         </div>
 
-        {/* Imagen de perfil opcional */}
         <div>
           <label>Imagen de Perfil (opcional)</label>
           <input
@@ -74,7 +68,6 @@ export default function CrearPerfilPage() {
           />
         </div>
 
-        {/* Imagen de fondo opcional */}
         <div>
           <label>Imagen de Fondo (opcional)</label>
           <input
@@ -91,3 +84,4 @@ export default function CrearPerfilPage() {
     </div>
   );
 }
+
