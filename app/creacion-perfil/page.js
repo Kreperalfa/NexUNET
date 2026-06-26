@@ -15,6 +15,9 @@ export default function CrearPerfilPage() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    console.log("FRONTEND → imagenPerfil:", imagenPerfil);
+    console.log("FRONTEND → imagenFondo:", imagenFondo);
+
     const descFinal =
       descripcion.trim() === ""
         ? "El usuario ha decidido no describirse."
