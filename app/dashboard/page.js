@@ -4,8 +4,10 @@ import { logoutUser } from "../../lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-    const router = useRouter();
-
+    const redirigir = useRouter();
+    const listaUsuarios = async () =>{
+        redirigir.push("/dashboard/perfil/lista-usuarios")
+    }
     const manejoLogout = async () => {
     const { ok, error } = await logoutUser();
 
@@ -14,7 +16,7 @@ export default function Dashboard() {
         return;
     }
 
-    router.push("/login");
+    redirigir.push("/login");
     };
 
     return (
@@ -24,6 +26,7 @@ export default function Dashboard() {
 
         {/* Botón temporal */}
         <button onClick={manejoLogout}>Cerrar sesión</button>
+        <button onClick={listaUsuarios}>Lista Usuarios</button>
         </div>
     );
 }
