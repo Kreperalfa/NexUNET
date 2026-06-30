@@ -34,7 +34,7 @@ export default function AbrirCuenta() {
       case "ingreso-directo":
         setMensaje("Ingreso exitoso.");
         setTimeout(() => {
-          redirigir.push(`/dashboard/cuenta/${respuesta.cuenta.idCuenta}`);
+          redirigir.push(`/dashboard/cuenta/abrir-cuenta/${respuesta.cuenta.idCuenta}/principal-cuenta`);
         }, 1000);
         break;
 

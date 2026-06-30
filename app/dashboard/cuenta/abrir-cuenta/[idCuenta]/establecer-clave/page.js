@@ -51,7 +51,7 @@ export default function EstablecerClave() {
 
     setMensaje("Clave establecida correctamente.");
     setTimeout(() => {
-      redirigir.push(`/dashboard/cuenta/${idCuenta}`);
+      redirigir.push(`/dashboard/cuenta/abrir-cuenta/${idCuenta}/principal-cuenta`);
     }, 1000);
   };
 
