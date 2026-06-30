@@ -105,7 +105,7 @@ export default function PrincipalCuenta() {
       {esAdmin && (
         <button
           onClick={() =>
-            redirigir.push(`/dashboard/cuenta/${cuenta.idCuenta}/editar-cuenta`)
+            redirigir.push(`/dashboard/cuenta/abrir-cuenta/${cuenta.idCuenta}/editar-cuenta`)
           }
           style={{
             padding: "10px 20px",
