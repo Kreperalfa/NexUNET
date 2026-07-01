@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { obtenerCuentaCompleta, actualizarEstadoMiembro } from "../../../../../../lib/cuenta";
+import { obtenerPublicaciones } from "../../../../../../lib/publicacion";
 import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
 
 export default function PrincipalCuenta() {
@@ -14,6 +15,8 @@ export default function PrincipalCuenta() {
   const [miembros, setMiembros] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [user, setUser] = useState(null);
+
+  const [publicaciones, setPublicaciones] = useState([]);
 
   /* ============================================================
      CARGAR USUARIO AUTENTICADO
@@ -50,6 +53,22 @@ export default function PrincipalCuenta() {
 
   useEffect(() => {
     cargarCuenta();
+  }, [idCuenta]);
+
+  /* ============================================================
+     CARGAR PUBLICACIONES
+     ============================================================ */
+  const cargarPublicaciones = async () => {
+    try {
+      const data = await obtenerPublicaciones(idCuenta);
+      setPublicaciones(data);
+    } catch (error) {
+      console.error("Error cargando publicaciones:", error);
+    }
+  };
+
+  useEffect(() => {
+    cargarPublicaciones();
   }, [idCuenta]);
 
   /* ============================================================
@@ -122,6 +141,7 @@ export default function PrincipalCuenta() {
      ============================================================ */
   return (
     <div style={{ padding: "20px" }}>
+      {/* ================= IMAGENES DE LA CUENTA ================= */}
       <div
         style={{
           width: "100%",
@@ -147,6 +167,7 @@ export default function PrincipalCuenta() {
         />
       </div>
 
+      {/* ================= INFO DE LA CUENTA ================= */}
       <h1 style={{ marginTop: "20px" }}>{cuenta.nombre}</h1>
       <p>{cuenta.descripcion || "Sin descripción."}</p>
 
@@ -191,6 +212,26 @@ export default function PrincipalCuenta() {
 
       <hr style={{ margin: "20px 0" }} />
 
+      {/* ================= BOTÓN PUBLICAR ================= */}
+      <button
+        onClick={() =>
+          redirigir.push(`/dashboard/cuenta/abrir-cuenta/${cuenta.idCuenta}/publicar-noticia`)
+        }
+        style={{
+          padding: "10px 20px",
+          background: "#4caf50",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          marginTop: "10px",
+          display: "block"
+        }}
+      >
+        Publicar noticia
+      </button>
+
+      {/* ================= MIEMBROS ================= */}
       <h2>Miembros de la cuenta</h2>
 
       {miembrosOrdenados.length === 0 && <p>No hay miembros registrados.</p>}
@@ -272,8 +313,96 @@ export default function PrincipalCuenta() {
           </div>
         </div>
       ))}
+
+      {/* ================= PUBLICACIONES ================= */}
+      <hr style={{ margin: "30px 0" }} />
+      <h2>Publicaciones</h2>
+
+      {publicaciones.length === 0 && (
+        <p>No hay publicaciones registradas.</p>
+      )}
+
+      {publicaciones.map((p) => {
+        const autor = miembros.find(m => m.idUsuario === p.idUsuarioAutor);
+
+        return (
+          <div
+            key={p.idPublicacion}
+            style={{
+              marginTop: "20px",
+              padding: "15px",
+              background: "#fafafa",
+              borderRadius: "10px",
+              border: "1px solid #ddd"
+            }}
+          >
+            {/* Autor */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <img
+                src={autor?.perfil?.imagenPerfil || "/default-user.png"}
+                alt="Autor"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  marginRight: "15px"
+                }}
+              />
+
+              <div>
+                <p style={{ margin: 0, fontWeight: "bold" }}>
+                  {autor?.perfil?.nombre || "Autor desconocido"}
+                </p>
+                <p style={{ margin: 0, fontSize: "13px", color: "#666" }}>
+                  {new Date(p.fechaCreacion).toLocaleString()}
+                </p>
+              </div>
+            </div>
+
+            {/* Contenido */}
+            <p style={{ marginTop: "15px", fontSize: "16px" }}>
+              {p.contenido}
+            </p>
+
+            {/* Botones */}
+            <div style={{ marginTop: "10px" }}>
+              {/* Solo el autor puede editar */}
+              {p.idUsuarioAutor === user.id && (
+                <button
+                  style={{
+                    padding: "6px 12px",
+                    background: "#2196f3",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    marginRight: "10px"
+                  }}
+                >
+                  Editar
+                </button>
+              )}
+
+              {/* Solo admin puede eliminar */}
+              {esAdmin && (
+                <button
+                  style={{
+                    padding: "6px 12px",
+                    background: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer"
+                  }}
+                >
+                  Eliminar
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
-
-

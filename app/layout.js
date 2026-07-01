@@ -1,6 +1,6 @@
 export const metadata = {
-    title: 'RedUNET',
-    description: 'Proyecto RedUNET',
+    title: 'NexUNET',
+    description: 'Proyecto NexUNET',
 }
 
 export default function RootLayout({ children }) {
