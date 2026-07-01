@@ -6,6 +6,7 @@ import { obtenerCuentaCompleta, actualizarEstadoMiembro } from "../../../../../.
 import { obtenerPublicaciones } from "../../../../../../lib/publicacion";
 import { obtenerHashtagsPublicacion } from "../../../../../../lib/publicacion";
 import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
+import { obtenerPublicacionesConMultimedia } from "../../../../../../lib/publicacion";
 
 export default function PrincipalCuenta() {
   const params = useParams();
@@ -61,17 +62,18 @@ export default function PrincipalCuenta() {
      CARGAR PUBLICACIONES
      ============================================================ */
   const cargarPublicaciones = async () => {
-    try {
-      const data = await obtenerPublicaciones(idCuenta);
-      setPublicaciones(data);
-    } catch (error) {
-      console.error("Error cargando publicaciones:", error);
-    }
-  };
+  try {
+    const data = await obtenerPublicacionesConMultimedia(idCuenta);
+    setPublicaciones(data);
+  } catch (error) {
+    console.error("Error cargando publicaciones:", error);
+  }
+};
 
-  useEffect(() => {
-    cargarPublicaciones();
-  }, [idCuenta]);
+useEffect(() => {
+  cargarPublicaciones();
+}, [idCuenta]);
+
   useEffect(() => {
   const cargarHashtags = async () => {
     const resultado = {};
@@ -382,6 +384,44 @@ export default function PrincipalCuenta() {
             <p style={{ marginTop: "15px", fontSize: "16px" }}>
               {p.contenido}
             </p>
+            {/* ================= MULTIMEDIA ================= */}
+            {p.multimedia && p.multimedia.length > 0 && (
+              <div style={{ marginTop: "15px" }}>
+                {p.multimedia.map((m) => (
+                  <div key={m.idMultimedia} style={{ marginBottom: "15px" }}>
+                  
+                    {/* IMAGEN */}
+                    {m.tipoArchivo === "imagen" && (
+                      <img
+                        src={m.url}
+                        alt="Imagen de la publicación"
+                        style={{
+                          width: "100%",
+                          maxHeight: "400px",
+                          objectFit: "cover",
+                          borderRadius: "10px"
+                        }}
+                      />
+                    )}
+            
+                    {/* VIDEO */}
+                    {m.tipoArchivo === "video" && (
+                      <video
+                        src={m.url}
+                        controls
+                        style={{
+                          width: "100%",
+                          maxHeight: "400px",
+                          borderRadius: "10px"
+                        }}
+                      />
+                    )}
+            
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* ================= HASHTAGS ================= */}
             {hashtagsPorPublicacion[p.idPublicacion] &&
               hashtagsPorPublicacion[p.idPublicacion].length > 0 && (

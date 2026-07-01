@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { crearPublicacion } from "../../../../../../lib/publicacion";
-import { obtenerTodosLosHashtags, asignarHashtagsPublicacion } from "../../../../../../lib/publicacion";
+import { crearPublicacion, obtenerTodosLosHashtags, asignarHashtagsPublicacion } from "../../../../../../lib/publicacion";
+import { obtenerCuentaCompleta } from "../../../../../../lib/cuenta"; // ← IMPORTANTE
 
 export default function PublicarNoticia() {
   const router = useRouter();
@@ -16,6 +16,30 @@ export default function PublicarNoticia() {
   // Hashtags
   const [hashtags, setHashtags] = useState([]);
   const [seleccionados, setSeleccionados] = useState([]);
+
+  // Archivos multimedia
+  const [archivos, setArchivos] = useState([]);
+
+  // Nombre de la cuenta (lo necesitamos para la ruta del bucket)
+  const [cuenta, setCuenta] = useState(null);
+
+  /* ============================================================
+     CARGAR INFO DE LA CUENTA (CORREGIDO)
+     ============================================================ */
+  useEffect(() => {
+    const cargarCuenta = async () => {
+      const respuesta = await obtenerCuentaCompleta(idCuenta);
+
+      if (!respuesta.ok) {
+        console.error("Error cargando cuenta:", respuesta.mensaje);
+        return;
+      }
+
+      setCuenta(respuesta.cuenta); // ← AQUÍ VIENE cuenta.nombre
+    };
+
+    cargarCuenta();
+  }, [idCuenta]);
 
   /* ============================================================
      CARGAR TODOS LOS HASHTAGS
@@ -45,16 +69,31 @@ export default function PublicarNoticia() {
   };
 
   /* ============================================================
+     MANEJAR ARCHIVOS
+     ============================================================ */
+  const manejarArchivos = (e) => {
+    const files = Array.from(e.target.files);
+    setArchivos(files);
+  };
+
+  /* ============================================================
      MANEJAR PUBLICACIÓN
      ============================================================ */
   async function manejarPublicacion() {
     try {
       setCargando(true);
 
-      // 1) Crear publicación
+      if (!cuenta) {
+        alert("Error: No se pudo obtener la información de la cuenta.");
+        return;
+      }
+
+      // 1) Crear publicación con multimedia
       const idPublicacion = await crearPublicacion({
         contenido,
-        idCuenta
+        idCuenta,
+        archivos,
+        nombreCuenta: cuenta.nombre // ← AHORA SÍ FUNCIONA
       });
 
       console.log("Publicación creada con ID:", idPublicacion);
@@ -97,6 +136,51 @@ export default function PublicarNoticia() {
           fontSize: "16px"
         }}
       />
+
+      {/* ============================================================
+         ARCHIVOS MULTIMEDIA
+         ============================================================ */}
+      <h3 style={{ marginTop: "25px" }}>Agregar imágenes o videos</h3>
+
+      <input
+        type="file"
+        multiple
+        accept="image/*,video/*"
+        onChange={manejarArchivos}
+        style={{ marginTop: "10px" }}
+      />
+
+      {/* Previsualización */}
+      {archivos.length > 0 && (
+        <div style={{ marginTop: "15px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {archivos.map((file, index) => (
+            <div key={index}>
+              {file.type.startsWith("image") ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt="preview"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    objectFit: "cover",
+                    borderRadius: "8px"
+                  }}
+                />
+              ) : (
+                <video
+                  src={URL.createObjectURL(file)}
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "8px"
+                  }}
+                  muted
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ============================================================
          HASHTAGS
