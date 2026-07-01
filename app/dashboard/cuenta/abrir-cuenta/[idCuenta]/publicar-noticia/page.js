@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { crearPublicacion } from "../../../../../../lib/publicacion";
+import { obtenerTodosLosHashtags, asignarHashtagsPublicacion } from "../../../../../../lib/publicacion";
 
 export default function PublicarNoticia() {
   const router = useRouter();
@@ -12,11 +13,45 @@ export default function PublicarNoticia() {
   const [contenido, setContenido] = useState("");
   const [cargando, setCargando] = useState(false);
 
+  // Hashtags
+  const [hashtags, setHashtags] = useState([]);
+  const [seleccionados, setSeleccionados] = useState([]);
+
+  /* ============================================================
+     CARGAR TODOS LOS HASHTAGS
+     ============================================================ */
+  useEffect(() => {
+    const cargarHashtags = async () => {
+      try {
+        const data = await obtenerTodosLosHashtags();
+        setHashtags(data);
+      } catch (error) {
+        console.error("Error cargando hashtags:", error);
+      }
+    };
+
+    cargarHashtags();
+  }, []);
+
+  /* ============================================================
+     SELECCIONAR / DESELECCIONAR HASHTAG
+     ============================================================ */
+  const toggleHashtag = (idHashtag) => {
+    setSeleccionados((prev) =>
+      prev.includes(idHashtag)
+        ? prev.filter((id) => id !== idHashtag)
+        : [...prev, idHashtag]
+    );
+  };
+
+  /* ============================================================
+     MANEJAR PUBLICACIÓN
+     ============================================================ */
   async function manejarPublicacion() {
     try {
       setCargando(true);
 
-      // Crear publicación
+      // 1) Crear publicación
       const idPublicacion = await crearPublicacion({
         contenido,
         idCuenta
@@ -24,7 +59,12 @@ export default function PublicarNoticia() {
 
       console.log("Publicación creada con ID:", idPublicacion);
 
-      // Redirigir al feed de la cuenta
+      // 2) Asignar hashtags (si hay)
+      if (seleccionados.length > 0) {
+        await asignarHashtagsPublicacion(idPublicacion, seleccionados);
+      }
+
+      // 3) Redirigir al feed
       router.push(`/dashboard/cuenta/abrir-cuenta/${idCuenta}/principal-cuenta`);
 
     } catch (error) {
@@ -35,6 +75,9 @@ export default function PublicarNoticia() {
     }
   }
 
+  /* ============================================================
+     RENDER
+     ============================================================ */
   return (
     <div style={{ padding: "20px" }}>
       <h1 style={{ fontSize: "28px", fontWeight: "bold" }}>
@@ -54,6 +97,35 @@ export default function PublicarNoticia() {
           fontSize: "16px"
         }}
       />
+
+      {/* ============================================================
+         HASHTAGS
+         ============================================================ */}
+      <h3 style={{ marginTop: "25px" }}>Seleccionar hashtags</h3>
+
+      <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "10px" }}>
+        {hashtags.map((h) => {
+          const activo = seleccionados.includes(h.idHashtag);
+
+          return (
+            <button
+              key={h.idHashtag}
+              onClick={() => toggleHashtag(h.idHashtag)}
+              style={{
+                padding: "8px 14px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: "pointer",
+                background: activo ? "#4caf50" : "#f44336",
+                color: "white",
+                fontSize: "14px"
+              }}
+            >
+              #{h.nombre}
+            </button>
+          );
+        })}
+      </div>
 
       {/* Botón publicar */}
       <button

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { obtenerCuentaCompleta, actualizarEstadoMiembro } from "../../../../../../lib/cuenta";
 import { obtenerPublicaciones } from "../../../../../../lib/publicacion";
+import { obtenerHashtagsPublicacion } from "../../../../../../lib/publicacion";
 import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
 
 export default function PrincipalCuenta() {
@@ -17,6 +18,7 @@ export default function PrincipalCuenta() {
   const [user, setUser] = useState(null);
 
   const [publicaciones, setPublicaciones] = useState([]);
+  const [hashtagsPorPublicacion, setHashtagsPorPublicacion] = useState({});
 
   /* ============================================================
      CARGAR USUARIO AUTENTICADO
@@ -70,6 +72,22 @@ export default function PrincipalCuenta() {
   useEffect(() => {
     cargarPublicaciones();
   }, [idCuenta]);
+  useEffect(() => {
+  const cargarHashtags = async () => {
+    const resultado = {};
+
+    for (const pub of publicaciones) {
+      const hs = await obtenerHashtagsPublicacion(pub.idPublicacion);
+      resultado[pub.idPublicacion] = hs;
+    }
+
+    setHashtagsPorPublicacion(resultado);
+  };
+
+  if (publicaciones.length > 0) {
+    cargarHashtags();
+  }
+}, [publicaciones]);
 
   /* ============================================================
      ERRORES Y CARGA
@@ -364,7 +382,27 @@ export default function PrincipalCuenta() {
             <p style={{ marginTop: "15px", fontSize: "16px" }}>
               {p.contenido}
             </p>
-
+            {/* ================= HASHTAGS ================= */}
+            {hashtagsPorPublicacion[p.idPublicacion] &&
+              hashtagsPorPublicacion[p.idPublicacion].length > 0 && (
+                <div style={{ marginTop: "10px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  {hashtagsPorPublicacion[p.idPublicacion].map((h) => (
+                    <span
+                      key={h.idHashtag}
+                      style={{
+                        padding: "6px 12px",
+                        background: "#4caf50",
+                        color: "white",
+                        borderRadius: "20px",
+                        fontSize: "14px",
+                        fontWeight: "bold"
+                      }}
+                    >
+                      #{h.nombre}
+                    </span>
+                  ))}
+                </div>
+              )}
             {/* Botones */}
             <div style={{ marginTop: "10px" }}>
               {/* Solo el autor puede editar */}
