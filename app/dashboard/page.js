@@ -54,6 +54,23 @@ export default function Dashboard() {
       {/* Botón temporal */}
       <button onClick={manejoLogout}>Cerrar sesión</button>
       <button onClick={listaUsuarios}>Lista Usuarios</button>
+      <button
+        onClick={() =>
+          redirigir.push(`/dashboard/noticias`)
+        }
+        style={{
+          padding: "10px 20px",
+          background: "#4caf50",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          marginTop: "10px",
+          display: "block"
+        }}
+      >
+        ver noticia
+      </button>
 
       {/* Botón visible solo para nivel 7 u 8 */}
       {puedeCrearCuenta && (
