@@ -250,6 +250,26 @@ useEffect(() => {
       >
         Publicar noticia
       </button>
+      {/* ================= BOTÓN PUBLICAR EN FORO ================= */}
+      {cuenta.permitirForo && (
+        <button
+          onClick={() =>
+            redirigir.push(`/dashboard/cuenta/abrir-cuenta/${cuenta.idCuenta}/publicar-foro`)
+          }
+          style={{
+            padding: "10px 20px",
+            background: "#673ab7",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            marginTop: "10px",
+            display: "block"
+          }}
+        >
+          Publicar en Foro
+        </button>
+      )}
 
       {/* ================= MIEMBROS ================= */}
       <h2>Miembros de la cuenta</h2>
