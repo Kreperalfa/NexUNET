@@ -251,7 +251,7 @@ useEffect(() => {
         Publicar noticia
       </button>
       {/* ================= BOTÓN PUBLICAR EN FORO ================= */}
-      {cuenta.permitirForo && (
+      {cuenta.cuentaDepartamento && (
         <button
           onClick={() =>
             redirigir.push(`/dashboard/cuenta/abrir-cuenta/${cuenta.idCuenta}/publicar-foro`)

@@ -11,7 +11,7 @@ export default function CrearCuenta() {
 
   const [nombreCuenta, setNombreCuenta] = useState("");
   const [claveTemporal, setClaveTemporal] = useState("");
-  const [permitirForo, setPermitirForo] = useState(false); // ← NUEVO
+  const [cuentaDepartamento, setCuentaDepartamento] = useState(false); // ← NUEVO
   const [mensaje, setMensaje] = useState("");
 
   const manejarCreacion = async () => {
@@ -55,7 +55,7 @@ export default function CrearCuenta() {
         "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenPerfil-porfecto.png",
       imagenFondoCuenta:
         "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg",
-      permitirForo: permitirForo // ← NUEVO
+      cuentaDepartamento: cuentaDepartamento // ← NUEVO
     });
 
     if (error) {
@@ -94,23 +94,23 @@ export default function CrearCuenta() {
         />
       </div>
 
-      {/* ================= PERMITIR FORO ================= */}
+      {/* ================= CUENTA DEPARTAMENTAL ================= */}
       <div style={{ marginTop: "20px" }}>
         <label style={{ display: "block", marginBottom: "8px" }}>
-          ¿Permitir que esta cuenta publique en el foro oficial?
+          ¿La cuenta es de un departamento oficial?
         </label>
 
         <select
-          value={permitirForo ? "true" : "false"}
-          onChange={(e) => setPermitirForo(e.target.value === "true")}
+          value={cuentaDepartamento ? "true" : "false"}
+          onChange={(e) => setCuentaDepartamento(e.target.value === "true")}
           style={{
             padding: "8px",
             borderRadius: "6px",
             border: "1px solid #ccc"
           }}
         >
-          <option value="false">No permitir</option>
-          <option value="true">Sí permitir</option>
+          <option value="true">SI</option>
+          <option value="false">NO</option>
         </select>
       </div>
 
