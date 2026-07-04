@@ -230,6 +230,26 @@ useEffect(() => {
         </button>
       )}
 
+      {esAdmin && cuenta.cuentaDepartamento && (
+        <button
+          onClick={() =>
+            redirigir.push(`/dashboard/cuenta/abrir-cuenta/${cuenta.idCuenta}/materia`)
+          }
+          style={{
+            padding: "10px 20px",
+            background: "#ff9800",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            marginTop: "10px",
+            display: "block"
+          }}
+        >
+          Materias
+        </button>
+      )}
+
       <hr style={{ margin: "20px 0" }} />
 
       {/* ================= BOTÓN PUBLICAR ================= */}
