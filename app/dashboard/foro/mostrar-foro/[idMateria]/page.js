@@ -16,13 +16,18 @@ export default function MostrarForoPage() {
     const { data, error } = await supabase
       .from("Foro")
       .select("idForo, tipo, created_at")
-      .eq("idMateria", idMateria)
-      .order("tipo", { ascending: true });
+      .eq("idMateria", idMateria);
 
     if (error) {
       console.error("Error cargando foros:", error);
     } else {
-      setForos(data);
+      // Ordenar manualmente: primero OFICIAL, luego NO_OFICIAL
+      const ordenados = data.sort((a, b) => {
+        if (a.tipo === "OFICIAL" && b.tipo !== "OFICIAL") return -1;
+        if (a.tipo !== "OFICIAL" && b.tipo === "OFICIAL") return 1;
+        return 0;
+      });
+      setForos(ordenados);
     }
 
     setCargando(false);
@@ -32,16 +37,16 @@ export default function MostrarForoPage() {
     cargarForos();
   }, [idMateria]);
 
-  // Cargar contenido de cada foro (ejemplo: publicaciones o hilos)
-  const cargarContenidoForo = async (idForo) => {
+  // Cargar hilos de cada foro
+  const cargarHilosForo = async (idForo) => {
     const { data, error } = await supabase
-      .from("PublicacionForo") // 👈 ajusta al nombre real de tu tabla de publicaciones/hilos
-      .select("idPublicacion, contenido, created_at, idUsuario")
-      .eq("idForo", idForo)
+      .from("Hilo")
+      .select("idHilo, titulo, contenido, created_at, idUsuarioCreador, idCuentaCreador")
+      .eq("idForoFuente", idForo)
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error cargando contenido del foro:", error);
+      console.error("Error cargando hilos del foro:", error);
       return [];
     }
     return data;
@@ -72,41 +77,46 @@ export default function MostrarForoPage() {
           </h2>
           <p>Creado: {new Date(foro.created_at).toLocaleString()}</p>
 
-          {/* Contenido del foro */}
-          <ForoContenido idForo={foro.idForo} cargarContenido={cargarContenidoForo} />
+          {/* Hilos del foro */}
+          <ForoContenido idForo={foro.idForo} cargarHilos={cargarHilosForo} />
         </div>
       ))}
     </div>
   );
 }
 
-// Componente para mostrar contenido de un foro
-function ForoContenido({ idForo, cargarContenido }) {
-  const [contenido, setContenido] = useState([]);
+// Componente para mostrar hilos de un foro
+function ForoContenido({ idForo, cargarHilos }) {
+  const [hilos, setHilos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    const fetchContenido = async () => {
-      const data = await cargarContenido(idForo);
-      setContenido(data);
+    const fetchHilos = async () => {
+      const data = await cargarHilos(idForo);
+      setHilos(data);
       setCargando(false);
     };
-    fetchContenido();
-  }, [idForo, cargarContenido]);
+    fetchHilos();
+  }, [idForo, cargarHilos]);
 
-  if (cargando) return <p>Cargando contenido...</p>;
+  if (cargando) return <p>Cargando hilos...</p>;
 
-  if (contenido.length === 0) return <p>Este foro aún no tiene publicaciones.</p>;
+  if (hilos.length === 0) return <p>Este foro aún no tiene hilos.</p>;
 
   return (
     <ul>
-      {contenido.map((pub) => (
-        <li key={pub.idPublicacion} style={{ marginBottom: "1rem" }}>
-          <strong>Usuario {pub.idUsuario}</strong>
+      {hilos.map((hilo) => (
+        <li key={hilo.idHilo} style={{ marginBottom: "1rem" }}>
+          <strong>{hilo.titulo}</strong>
           <br />
-          {pub.contenido}
+          {hilo.contenido}
           <br />
-          <small>{new Date(pub.created_at).toLocaleString()}</small>
+          <small>
+            Creado por usuario {hilo.idUsuarioCreador}
+            {hilo.idCuentaCreador && ` (Cuenta ${hilo.idCuentaCreador})`}
+            {" - "}
+            {new Date(hilo.created_at).toLocaleString()}
+          </small>
         </li>
       ))}
     </ul>
