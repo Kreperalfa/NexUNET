@@ -22,19 +22,37 @@ export default function MateriaPage() {
   const params = useParams();
   const idCuentaActual = params.idCuenta;
 
-  // Cargar todas las materias
+  // Cargar todas las materias de la cuenta actual
   const cargarMaterias = async () => {
+    // 1. Buscar el departamento vinculado a la cuenta
+    const { data: dep, error: depError } = await supabase
+      .from("Departamento")
+      .select("idDepartamento")
+      .eq("idCuentaDepartamento", idCuentaActual)
+      .single();
+
+    if (depError || !dep) {
+      console.error("No se encontró departamento para la cuenta:", depError);
+      setMaterias([]);
+      return;
+    }
+
+    // 2. Buscar materias de ese departamento
     const { data, error } = await supabase
       .from("Materia")
       .select("*")
+      .eq("idDepartamento", dep.idDepartamento)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error(error);
+      setMaterias([]);
     } else {
       setMaterias(data);
     }
   };
+
+
 
   // Cargar todas las carreras
   const cargarCarreras = async () => {
@@ -76,7 +94,6 @@ export default function MateriaPage() {
         idCuentaActual
       );
 
-      // ✅ usar el objeto retornado por crearMateria
       if (resultado.ok && resultado.materia) {
         await vincularCarrerasMateria(resultado.materia.idMateria, carrerasSeleccionadas);
       }
@@ -99,12 +116,10 @@ export default function MateriaPage() {
     setUnidadCredito(materia.unidadCredito);
     setEditandoId(materia.idMateria);
 
-    // Cargar carreras vinculadas
     const vinculadas = await obtenerCarrerasMateria(materia.idMateria);
     setCarrerasSeleccionadas(vinculadas);
   };
 
-  // Toggle selección de carrera
   const toggleCarrera = (idCarrera) => {
     setCarrerasSeleccionadas((prev) =>
       prev.includes(idCarrera)
@@ -186,23 +201,27 @@ export default function MateriaPage() {
 
       {/* Lista de materias */}
       <h2>Materias registradas</h2>
-      <ul>
-        {materias.map((materia) => (
-          <li key={materia.idMateria} style={{ marginBottom: "1rem" }}>
-            <strong>{materia.nombreMateria}</strong>
-            <br />
-            Créditos: {materia.unidadCredito}
-            <br />
-            Departamento: {materia.idDepartamento}
-            <br />
-            Creada por usuario: {materia.idUsuarioCreado}
-            <br />
-            Fecha: {new Date(materia.created_at).toLocaleString()}
-            <br />
-            <button onClick={() => manejarEditar(materia)}>Editar</button>
-          </li>
-        ))}
-      </ul>
+      {materias.length === 0 ? (
+        <p>No hay materias creadas en esta cuenta.</p>
+      ) : (
+        <ul>
+          {materias.map((materia) => (
+            <li key={materia.idMateria} style={{ marginBottom: "1rem" }}>
+              <strong>{materia.nombreMateria}</strong>
+              <br />
+              Créditos: {materia.unidadCredito}
+              <br />
+              Departamento: {materia.idDepartamento}
+              <br />
+              Creada por usuario: {materia.idUsuarioCreado}
+              <br />
+              Fecha: {new Date(materia.created_at).toLocaleString()}
+              <br />
+              <button onClick={() => manejarEditar(materia)}>Editar</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

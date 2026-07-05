@@ -88,6 +88,9 @@ export default function Dashboard() {
       <button onClick={() => redirigir.push("/dashboard/cuenta/abrir-cuenta")}>
         Abrir cuenta
       </button>
+      <button onClick={() => redirigir.push("/dashboard/foro/listado-materia")}>
+        Abrir foro
+      </button>
     </div>
   );
 }
