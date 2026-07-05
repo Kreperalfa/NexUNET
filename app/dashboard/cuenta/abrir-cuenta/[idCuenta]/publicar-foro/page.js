@@ -7,50 +7,37 @@ import { crearHilo } from "../../../../../../lib/hilo";
 export default function PublicarEnForo() {
   const supabase = getSupabaseBrowserClient();
   const params = useParams();
-  const idCuenta = params.idCuenta; // 👈 ahora usamos idCuenta desde la URL
+  const idCuenta = params.idCuenta;
 
   const [materias, setMaterias] = useState([]);
   const [materiaSeleccionada, setMateriaSeleccionada] = useState(null);
   const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [archivos, setArchivos] = useState([]);       // 👈 nuevos archivos
+  const [linksExternos, setLinksExternos] = useState([]); // 👈 nuevos links
+  const [nuevoLink, setNuevoLink] = useState("");     // input temporal para links
 
   // Cargar materias vinculadas al departamento de la cuenta
-const cargarMaterias = async () => {
-  console.log("➡️ idCuenta recibido:", idCuenta);
+  const cargarMaterias = async () => {
+    const { data: departamento } = await supabase
+      .from("Departamento")
+      .select("idDepartamento")
+      .eq("idCuentaDepartamento", idCuenta)
+      .single();
 
-  // Paso 1: buscar el departamento vinculado a la cuenta
-  const { data: departamento, error: depError } = await supabase
-    .from("Departamento")
-    .select("idDepartamento")
-    .eq("idCuentaDepartamento", idCuenta)
-    .single();
+    if (!departamento) return;
 
-  if (depError || !departamento) {
-    console.error("❌ Error obteniendo departamento:", depError);
-    return;
-  }
+    const idDepartamento = departamento.idDepartamento;
 
-  const idDepartamento = departamento.idDepartamento;
-  console.log("✅ idDepartamento obtenido:", idDepartamento);
+    const { data } = await supabase
+      .from("Materia")
+      .select("idMateria, nombreMateria")
+      .eq("idDepartamento", idDepartamento)
+      .order("nombreMateria", { ascending: true });
 
-  // Paso 2: cargar materias del departamento
-  const { data, error } = await supabase
-    .from("Materia")
-    .select("idMateria, nombreMateria")
-    .eq("idDepartamento", idDepartamento)
-    .order("nombreMateria", { ascending: true });
-
-  console.log("➡️ Resultado consulta Materia:", { data, error });
-
-  if (error) {
-    console.error("❌ Error cargando materias:", error);
-  } else {
-    console.log("✅ Materias cargadas:", data);
-    setMaterias(data);
-  }
-};
-
+    setMaterias(data || []);
+  };
 
   useEffect(() => {
     cargarMaterias();
@@ -64,39 +51,34 @@ const cargarMaterias = async () => {
       return;
     }
 
-    console.log("➡️ Materia seleccionada:", materiaSeleccionada);
-
-    // Buscar foro oficial de la materia
-    const { data: foros, error } = await supabase
+    const { data: foros } = await supabase
       .from("Foro")
-      .select("idForo")
+      .select("idForo, tipo")
       .eq("idMateria", materiaSeleccionada)
       .eq("tipo", "OFICIAL")
       .single();
 
-    console.log("➡️ Resultado consulta Foro oficial:", { foros, error });
-
-    if (error || !foros) {
+    if (!foros) {
       setMensaje("No se encontró el foro oficial de la materia.");
       return;
     }
 
     const idForoOficial = foros.idForo;
-    console.log("✅ idForoOficial encontrado:", idForoOficial);
+    const tipoForo = foros.tipo;
 
-    // Crear hilo
     const { data: userData } = await supabase.auth.getUser();
-    console.log("➡️ Usuario autenticado:", userData);
 
     const resultado = await crearHilo({
       titulo,
       contenido,
-      idUsuarioCreador: userData?.user?.id, // usuario actual
-      idCuentaCreador: idCuenta,      // 👈 pasamos idCuenta, backend resuelve idDepartamento
+      idUsuarioCreador: userData?.user?.id,
+      idCuentaCreador: idCuenta,
       idForoFuente: idForoOficial,
+      nombreMateria: materias.find((m) => m.idMateria === materiaSeleccionada)?.nombreMateria,
+      tipoForo,
+      archivos,
+      linksExternos,
     });
-
-    console.log("➡️ Resultado creación hilo:", resultado);
 
     setMensaje(resultado.mensaje);
 
@@ -104,15 +86,15 @@ const cargarMaterias = async () => {
       setTitulo("");
       setContenido("");
       setMateriaSeleccionada(null);
+      setArchivos([]);
+      setLinksExternos([]);
+      setNuevoLink("");
     }
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>
-        Foro Oficial
-      </h1>
-
+      <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>Foro Oficial</h1>
       <p style={{ fontSize: "18px", color: "#555" }}>
         Aquí podrás publicar contenido en el foro oficial de tu departamento.
       </p>
@@ -167,6 +149,46 @@ const cargarMaterias = async () => {
             rows={5}
             style={{ display: "block", marginBottom: "10px", width: "100%" }}
           />
+
+          {/* Input de archivos */}
+          <input
+            type="file"
+            multiple
+            onChange={(e) => setArchivos(Array.from(e.target.files))}
+            style={{ display: "block", marginBottom: "10px", width: "100%" }}
+          />
+
+          {/* Input de links externos */}
+          <div style={{ marginBottom: "10px" }}>
+            <input
+              type="text"
+              placeholder="Agregar link externo"
+              value={nuevoLink}
+              onChange={(e) => setNuevoLink(e.target.value)}
+              style={{ width: "80%", marginRight: "10px" }}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (nuevoLink.trim()) {
+                  setLinksExternos([...linksExternos, nuevoLink.trim()]);
+                  setNuevoLink("");
+                }
+              }}
+            >
+              Añadir link
+            </button>
+          </div>
+
+          {/* Mostrar links agregados */}
+          {linksExternos.length > 0 && (
+            <ul>
+              {linksExternos.map((link, idx) => (
+                <li key={idx}>{link}</li>
+              ))}
+            </ul>
+          )}
+
           <button type="submit">Publicar Hilo</button>
         </form>
         {mensaje && <p style={{ marginTop: "10px" }}>{mensaje}</p>}

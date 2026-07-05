@@ -21,7 +21,6 @@ export default function MostrarForoPage() {
     if (error) {
       console.error("Error cargando foros:", error);
     } else {
-      // Ordenar manualmente: primero OFICIAL, luego NO_OFICIAL
       const ordenados = data.sort((a, b) => {
         if (a.tipo === "OFICIAL" && b.tipo !== "OFICIAL") return -1;
         if (a.tipo !== "OFICIAL" && b.tipo === "OFICIAL") return 1;
@@ -47,6 +46,20 @@ export default function MostrarForoPage() {
 
     if (error) {
       console.error("Error cargando hilos del foro:", error);
+      return [];
+    }
+    return data;
+  };
+
+  // Cargar archivos/links de un hilo
+  const cargarArchivosHilo = async (idHilo) => {
+    const { data, error } = await supabase
+      .from("ArchivoHilo")
+      .select("nombreArchivo, tipoArchivo")
+      .eq("idHilo", idHilo);
+
+    if (error) {
+      console.error("Error cargando archivos del hilo:", error);
       return [];
     }
     return data;
@@ -78,7 +91,11 @@ export default function MostrarForoPage() {
           <p>Creado: {new Date(foro.created_at).toLocaleString()}</p>
 
           {/* Hilos del foro */}
-          <ForoContenido idForo={foro.idForo} cargarHilos={cargarHilosForo} />
+          <ForoContenido
+            idForo={foro.idForo}
+            cargarHilos={cargarHilosForo}
+            cargarArchivos={cargarArchivosHilo}
+          />
         </div>
       ))}
     </div>
@@ -86,21 +103,29 @@ export default function MostrarForoPage() {
 }
 
 // Componente para mostrar hilos de un foro
-function ForoContenido({ idForo, cargarHilos }) {
+function ForoContenido({ idForo, cargarHilos, cargarArchivos }) {
   const [hilos, setHilos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const fetchHilos = async () => {
       const data = await cargarHilos(idForo);
-      setHilos(data);
+
+      // Para cada hilo, cargar sus archivos/links
+      const hilosConArchivos = await Promise.all(
+        data.map(async (hilo) => {
+          const archivos = await cargarArchivos(hilo.idHilo);
+          return { ...hilo, archivos };
+        })
+      );
+
+      setHilos(hilosConArchivos);
       setCargando(false);
     };
     fetchHilos();
-  }, [idForo, cargarHilos]);
+  }, [idForo, cargarHilos, cargarArchivos]);
 
   if (cargando) return <p>Cargando hilos...</p>;
-
   if (hilos.length === 0) return <p>Este foro aún no tiene hilos.</p>;
 
   return (
@@ -117,6 +142,26 @@ function ForoContenido({ idForo, cargarHilos }) {
             {" - "}
             {new Date(hilo.created_at).toLocaleString()}
           </small>
+
+          {/* Mostrar archivos/links */}
+          {hilo.archivos && hilo.archivos.length > 0 && (
+            <div style={{ marginTop: "0.5rem" }}>
+              <p><strong>Adjuntos:</strong></p>
+              <ul>
+                {hilo.archivos.map((a, idx) => (
+                  <li key={idx}>
+                    {a.tipoArchivo === "link" ? (
+                      <a href={a.nombreArchivo} target="_blank" rel="noopener noreferrer">
+                        {a.nombreArchivo}
+                      </a>
+                    ) : (
+                      <span>{a.nombreArchivo}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </li>
       ))}
     </ul>
