@@ -130,7 +130,7 @@ export default function MostrarForoPage() {
           {foro.tipo === "NO_OFICIAL" && (
             <button
               onClick={() =>
-                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}`)
+                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}&idForo=${foro.idForo}`)
               }
               style={{ marginTop: "10px" }}
             >
@@ -141,7 +141,7 @@ export default function MostrarForoPage() {
           {foro.tipo === "OFICIAL" && (nivel === 2 || nivel === 3) && (
             <button
               onClick={() =>
-                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}`)
+                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}&idForo=${foro.idForo}`)
               }
               style={{ marginTop: "10px" }}
             >
