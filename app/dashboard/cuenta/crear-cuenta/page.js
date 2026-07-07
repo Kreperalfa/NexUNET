@@ -11,6 +11,7 @@ export default function CrearCuenta() {
 
   const [nombreCuenta, setNombreCuenta] = useState("");
   const [claveTemporal, setClaveTemporal] = useState("");
+  const [cuentaDepartamento, setCuentaDepartamento] = useState(false); // ← NUEVO
   const [mensaje, setMensaje] = useState("");
 
   const manejarCreacion = async () => {
@@ -42,18 +43,19 @@ export default function CrearCuenta() {
     // Crear cuenta con valores iniciales correctos
     const { error } = await supabase.from("Cuenta").insert({
       nombre: nombreCuenta.trim(),
-      claveTemporal: claveTemporal.trim(), // clave temporal inicial
-      clave: null,                         // clave permanente aún no existe
-      estado: "pendiente",                 // estado inicial
+      claveTemporal: claveTemporal.trim(),
+      clave: null,
+      estado: "pendiente",
       fechaCreacion: new Date(),
       fechaActivacion: null,
-      idAdmin: null,                       // se asignará cuando alguien use la clave temporal
-      idCreador: user.id,                  // el creador SI se asigna aquí
+      idAdmin: null,
+      idCreador: user.id,
       descripcion: "",
       imagenCuenta:
         "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenPerfil-porfecto.png",
       imagenFondoCuenta:
-        "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg"
+        "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg",
+      cuentaDepartamento: cuentaDepartamento // ← NUEVO
     });
 
     if (error) {
@@ -90,6 +92,26 @@ export default function CrearCuenta() {
           onChange={(e) => setClaveTemporal(e.target.value)}
           placeholder="Clave temporal"
         />
+      </div>
+
+      {/* ================= CUENTA DEPARTAMENTAL ================= */}
+      <div style={{ marginTop: "20px" }}>
+        <label style={{ display: "block", marginBottom: "8px" }}>
+          ¿La cuenta es de un departamento oficial?
+        </label>
+
+        <select
+          value={cuentaDepartamento ? "true" : "false"}
+          onChange={(e) => setCuentaDepartamento(e.target.value === "true")}
+          style={{
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid #ccc"
+          }}
+        >
+          <option value="true">SI</option>
+          <option value="false">NO</option>
+        </select>
       </div>
 
       <button

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
   const redirigir = useRouter();
   const [puedeCrearCuenta, setPuedeCrearCuenta] = useState(false);
+  const [puedeCrearCarrera, setPuedeCrearCarrera] = useState(false);
 
   // Cargar nivel del usuario al entrar al Dashboard
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function Dashboard() {
 
       if (nivel === 7 || nivel === 8) {
         setPuedeCrearCuenta(true);
+        setPuedeCrearCarrera(true);
       }
     };
 
@@ -78,8 +80,16 @@ export default function Dashboard() {
           Crear cuenta
         </button>
       )}
+      {puedeCrearCuenta && (
+        <button onClick={() => redirigir.push("/dashboard/carrera/crear-carrera")}>
+          Crear carrera
+        </button>
+      )}
       <button onClick={() => redirigir.push("/dashboard/cuenta/abrir-cuenta")}>
         Abrir cuenta
+      </button>
+      <button onClick={() => redirigir.push("/dashboard/foro/listado-materia")}>
+        Abrir foro
       </button>
     </div>
   );
