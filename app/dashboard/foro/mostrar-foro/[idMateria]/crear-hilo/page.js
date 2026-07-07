@@ -12,6 +12,7 @@ export default function CrearHiloPage() {
 
   const idMateria = params.idMateria;
   const tipoForo = searchParams.get("tipo") || "NO_OFICIAL";
+  const idForoFuente = searchParams.get("idForo"); // 👈 UUID REAL DEL FORO
 
   const [nombreMateria, setNombreMateria] = useState("");
   const [titulo, setTitulo] = useState("");
@@ -56,11 +57,17 @@ export default function CrearHiloPage() {
       return;
     }
 
+    // 👇 LOGS IMPORTANTES PARA DEPURAR
+    console.log("➡️ idMateria recibido:", idMateria);
+    console.log("➡️ tipoForo recibido:", tipoForo);
+    console.log("➡️ idForoFuente recibido (UUID):", idForoFuente);
+    console.log("➡️ Usuario creador:", idUsuarioCreador);
+
     const respuesta = await crearHiloUsuario({
       titulo,
       contenido,
       idUsuarioCreador,
-      idForoFuente: tipoForo === "OFICIAL" ? 1 : 2, // 👈 ajusta según tu lógica de foros
+      idForoFuente, // 👈 UUID válido
       nombreMateria,
       tipoForo,
       archivos,
@@ -74,7 +81,7 @@ export default function CrearHiloPage() {
 
     setMensaje("✅ Hilo creado exitosamente.");
     setTimeout(() => {
-      redirigir.push(`/foro/mostrar-foro/${idMateria}`);
+      redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}`);
     }, 1500);
   };
 
