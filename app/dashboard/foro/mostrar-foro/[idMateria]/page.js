@@ -13,46 +13,27 @@ export default function MostrarForoPage() {
   const [cargando, setCargando] = useState(true);
   const [nivel, setNivel] = useState(null);
 
-  // Cargar nivel del usuario actual
   const cargarNivelUsuario = async () => {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const { data: userData } = await supabase.auth.getUser();
     const userId = userData?.user?.id;
-
-    console.log("➡️ Resultado getUser:", userData, "Error:", userError);
-    console.log("➡️ userId obtenido:", userId);
-
-    if (!userId) {
-      console.warn("⚠️ No se encontró userId, usuario no autenticado.");
-      return;
-    }
+    if (!userId) return;
 
     const { data, error } = await supabase
       .from("Usuario")
       .select("nivel")
-      .eq("id", userId)   // 👈 usamos la columna correcta
+      .eq("id", userId)
       .single();
 
-    console.log("➡️ Consulta nivel Usuario:", data, "Error:", error);
-
-    if (!error && data) {
-      const nivelNum = Number(data.nivel);
-      console.log("✅ Nivel convertido a número:", nivelNum);
-      setNivel(nivelNum);
-    } else {
-      console.error("❌ No se pudo cargar nivel del usuario.");
-    }
+    if (!error && data) setNivel(Number(data.nivel));
   };
 
-  // Cargar foros de la materia
   const cargarForos = async () => {
     const { data, error } = await supabase
       .from("Foro")
       .select("idForo, tipo, created_at")
       .eq("idMateria", idMateria);
 
-    if (error) {
-      console.error("Error cargando foros:", error);
-    } else {
+    if (!error && data) {
       const ordenados = data.sort((a, b) => {
         if (a.tipo === "OFICIAL" && b.tipo !== "OFICIAL") return -1;
         if (a.tipo !== "OFICIAL" && b.tipo === "OFICIAL") return 1;
@@ -60,7 +41,6 @@ export default function MostrarForoPage() {
       });
       setForos(ordenados);
     }
-
     setCargando(false);
   };
 
@@ -69,7 +49,6 @@ export default function MostrarForoPage() {
     cargarNivelUsuario();
   }, [idMateria]);
 
-  // Cargar hilos de cada foro
   const cargarHilosForo = async (idForo) => {
     const { data, error } = await supabase
       .from("Hilo")
@@ -77,56 +56,40 @@ export default function MostrarForoPage() {
       .eq("idForoFuente", idForo)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error cargando hilos del foro:", error);
-      return [];
-    }
-    return data;
+    return error ? [] : data;
   };
 
-  // Cargar archivos/links de un hilo
-  const cargarArchivosHilo = async (idHilo) => {
+  const cargarArchivos = async (idHilo) => {
     const { data, error } = await supabase
       .from("ArchivoHilo")
       .select("nombreArchivo, tipoArchivo")
       .eq("idHilo", idHilo);
 
-    if (error) {
-      console.error("Error cargando archivos del hilo:", error);
-      return [];
-    }
-    return data;
+    return error ? [] : data;
+  };
+
+  const cargarSubHilos = async (idHilo) => {
+    const { data, error } = await supabase
+      .from("SubHilo")
+      .select("idSubHilo, contenido, created_at, idUsuarioCreador, idRespuestaPadre")
+      .eq("idHilo", idHilo)
+      .order("created_at", { ascending: true });
+
+    return error ? [] : data;
   };
 
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Foros de la Materia</h1>
 
-      {/* Debug visual */}
-      <p style={{ color: "blue" }}>DEBUG → Nivel actual: {nivel}</p>
-
       {cargando && <p>Cargando foros...</p>}
-
-      {!cargando && foros.length === 0 && (
-        <p>No hay foros registrados para esta materia.</p>
-      )}
+      {!cargando && foros.length === 0 && <p>No hay foros registrados para esta materia.</p>}
 
       {foros.map((foro) => (
-        <div
-          key={foro.idForo}
-          style={{
-            marginBottom: "2rem",
-            padding: "1rem",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-          }}
-        >
-          <h2>
-            {foro.tipo === "OFICIAL" ? "Foro Oficial" : "Foro No Oficial"}
-          </h2>
+        <div key={foro.idForo} style={{ marginBottom: "2rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "8px" }}>
+          <h2>{foro.tipo === "OFICIAL" ? "Foro Oficial" : "Foro No Oficial"}</h2>
           <p>Creado: {new Date(foro.created_at).toLocaleString()}</p>
 
-          {/* Botón de publicar hilo */}
           {foro.tipo === "NO_OFICIAL" && (
             <button
               onClick={() =>
@@ -149,11 +112,13 @@ export default function MostrarForoPage() {
             </button>
           )}
 
-          {/* Hilos del foro */}
           <ForoContenido
             idForo={foro.idForo}
+            tipoForo={foro.tipo}
+            idMateria={idMateria}
             cargarHilos={cargarHilosForo}
-            cargarArchivos={cargarArchivosHilo}
+            cargarArchivos={cargarArchivos}
+            cargarSubHilos={cargarSubHilos}
           />
         </div>
       ))}
@@ -161,27 +126,28 @@ export default function MostrarForoPage() {
   );
 }
 
-// Componente para mostrar hilos de un foro
-function ForoContenido({ idForo, cargarHilos, cargarArchivos }) {
+function ForoContenido({ idForo, tipoForo, idMateria, cargarHilos, cargarArchivos, cargarSubHilos }) {
   const [hilos, setHilos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const redirigir = useRouter();
 
   useEffect(() => {
     const fetchHilos = async () => {
       const data = await cargarHilos(idForo);
 
-      const hilosConArchivos = await Promise.all(
+      const hilosConExtras = await Promise.all(
         data.map(async (hilo) => {
           const archivos = await cargarArchivos(hilo.idHilo);
-          return { ...hilo, archivos };
+          const subhilos = await cargarSubHilos(hilo.idHilo);
+          return { ...hilo, archivos, subhilos };
         })
       );
 
-      setHilos(hilosConArchivos);
+      setHilos(hilosConExtras);
       setCargando(false);
     };
     fetchHilos();
-  }, [idForo, cargarHilos, cargarArchivos]);
+  }, [idForo, cargarHilos, cargarArchivos, cargarSubHilos]);
 
   if (cargando) return <p>Cargando hilos...</p>;
   if (hilos.length === 0) return <p>Este foro aún no tiene hilos.</p>;
@@ -196,21 +162,17 @@ function ForoContenido({ idForo, cargarHilos, cargarArchivos }) {
           <br />
           <small>
             Creado por usuario {hilo.idUsuarioCreador}
-            {hilo.idCuentaCreador && ` (Cuenta ${hilo.idCuentaCreador})`}
-            {" - "}
-            {new Date(hilo.created_at).toLocaleString()}
+            {hilo.idCuentaCreador && ` (Cuenta ${hilo.idCuentaCreador})`} - {new Date(hilo.created_at).toLocaleString()}
           </small>
 
-          {hilo.archivos && hilo.archivos.length > 0 && (
+          {hilo.archivos?.length > 0 && (
             <div style={{ marginTop: "0.5rem" }}>
               <p><strong>Adjuntos:</strong></p>
               <ul>
                 {hilo.archivos.map((a, idx) => (
                   <li key={idx}>
                     {a.tipoArchivo === "link" ? (
-                      <a href={a.nombreArchivo} target="_blank" rel="noopener noreferrer">
-                        {a.nombreArchivo}
-                      </a>
+                      <a href={a.nombreArchivo} target="_blank" rel="noopener noreferrer">{a.nombreArchivo}</a>
                     ) : (
                       <span>{a.nombreArchivo}</span>
                     )}
@@ -218,6 +180,40 @@ function ForoContenido({ idForo, cargarHilos, cargarArchivos }) {
                 ))}
               </ul>
             </div>
+          )}
+
+          {tipoForo === "NO_OFICIAL" && (
+            <button
+              onClick={() =>
+                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/responder-hilo?idHiloOrigen=${hilo.idHilo}&idRespuesta=${hilo.idHilo}`)
+              }
+              style={{ marginTop: "10px", padding: "6px 12px" }}
+            >
+              Responder
+            </button>
+          )}
+
+          {/* Subhilos */}
+          {hilo.subhilos?.length > 0 && (
+            <ul style={{ marginTop: "10px", marginLeft: "20px", borderLeft: "2px solid #ccc", paddingLeft: "10px" }}>
+              {hilo.subhilos.map((sub) => (
+                <li key={sub.idSubHilo} style={{ marginBottom: "0.5rem" }}>
+                  {sub.contenido}
+                  <br />
+                  <small>
+                    Respuesta de usuario {sub.idUsuarioCreador} - {new Date(sub.created_at).toLocaleString()}
+                  </small>
+                  <button
+                    onClick={() =>
+                      redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/responder-hilo?idHiloOrigen=${hilo.idHilo}&idRespuesta=${sub.idSubHilo}`)
+                    }
+                    style={{ marginTop: "5px", padding: "4px 10px" }}
+                  >
+                    Responder
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </li>
       ))}
