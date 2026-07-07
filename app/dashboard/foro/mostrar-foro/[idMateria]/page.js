@@ -15,34 +15,33 @@ export default function MostrarForoPage() {
 
   // Cargar nivel del usuario actual
   const cargarNivelUsuario = async () => {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  const userId = userData?.user?.id;
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
 
-  console.log("➡️ Resultado getUser:", userData, "Error:", userError);
-  console.log("➡️ userId obtenido:", userId);
+    console.log("➡️ Resultado getUser:", userData, "Error:", userError);
+    console.log("➡️ userId obtenido:", userId);
 
-  if (!userId) {
-    console.warn("⚠️ No se encontró userId, usuario no autenticado.");
-    return;
-  }
+    if (!userId) {
+      console.warn("⚠️ No se encontró userId, usuario no autenticado.");
+      return;
+    }
 
-  const { data, error } = await supabase
-    .from("Usuario")
-    .select("nivel")
-    .eq("id", userId)   // 👈 aquí el cambio
-    .single();
+    const { data, error } = await supabase
+      .from("Usuario")
+      .select("nivel")
+      .eq("id", userId)   // 👈 usamos la columna correcta
+      .single();
 
-  console.log("➡️ Consulta nivel Usuario:", data, "Error:", error);
+    console.log("➡️ Consulta nivel Usuario:", data, "Error:", error);
 
-  if (!error && data) {
-    const nivelNum = Number(data.nivel);
-    console.log("✅ Nivel convertido a número:", nivelNum);
-    setNivel(nivelNum);
-  } else {
-    console.error("❌ No se pudo cargar nivel del usuario.");
-  }
-};
-
+    if (!error && data) {
+      const nivelNum = Number(data.nivel);
+      console.log("✅ Nivel convertido a número:", nivelNum);
+      setNivel(nivelNum);
+    } else {
+      console.error("❌ No se pudo cargar nivel del usuario.");
+    }
+  };
 
   // Cargar foros de la materia
   const cargarForos = async () => {
@@ -130,7 +129,9 @@ export default function MostrarForoPage() {
           {/* Botón de publicar hilo */}
           {foro.tipo === "NO_OFICIAL" && (
             <button
-              onClick={() => redirigir.push(`/foro/${idMateria}/crear-hilo`)}
+              onClick={() =>
+                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}`)
+              }
               style={{ marginTop: "10px" }}
             >
               Publicar Hilo
@@ -139,7 +140,9 @@ export default function MostrarForoPage() {
 
           {foro.tipo === "OFICIAL" && (nivel === 2 || nivel === 3) && (
             <button
-              onClick={() => redirigir.push(`/foro/${idMateria}/crear-hilo`)}
+              onClick={() =>
+                redirigir.push(`/dashboard/foro/mostrar-foro/${idMateria}/crear-hilo?tipo=${foro.tipo}`)
+              }
               style={{ marginTop: "10px" }}
             >
               Publicar Hilo
