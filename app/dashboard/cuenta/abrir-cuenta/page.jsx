@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { abrirCuenta } from "../../../../lib/cuenta";
+import { abrirCuenta } from "@/lib/cuenta";
+
+import Card from "@/components/cards/Card";
+import Input from "@/components/ui/Input";
+import Button from "@/components/buttons/Button";
+import PageTitle from "@/components/ui/PageTitle";
+import ErrorMessage from "@/components/ui/ErrorMessage";
+
+import styles from "./page.module.css";
 
 export default function AbrirCuenta() {
   const redirigir = useRouter();
@@ -26,22 +34,22 @@ export default function AbrirCuenta() {
       return;
     }
 
-    /* ============================================================
-       MANEJO DE RESPUESTAS SEGÚN LA LÓGICA DEL BACKEND
-       ============================================================ */
-
     switch (respuesta.tipo) {
       case "ingreso-directo":
         setMensaje("Ingreso exitoso.");
         setTimeout(() => {
-          redirigir.push(`/dashboard/cuenta/abrir-cuenta/${respuesta.cuenta.idCuenta}/principal-cuenta`);
+          redirigir.push(
+            `/dashboard/cuenta/abrir-cuenta/${respuesta.cuenta.idCuenta}/principal-cuenta`
+          );
         }, 1000);
         break;
 
       case "establecer-clave":
         setMensaje("Debes establecer la clave permanente.");
         setTimeout(() => {
-          redirigir.push(`/dashboard/cuenta/abrir-cuenta/${respuesta.cuenta.idCuenta}/establecer-clave`);
+          redirigir.push(
+            `/dashboard/cuenta/abrir-cuenta/${respuesta.cuenta.idCuenta}/establecer-clave`
+          );
         }, 1000);
         break;
 
@@ -60,41 +68,35 @@ export default function AbrirCuenta() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Abrir cuenta</h1>
+    <div className={styles.contenedor}>
+      <Card>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Nombre de la cuenta</label>
-        <input
-          type="text"
+        <PageTitle>Abrir cuenta</PageTitle>
+
+        <Input
+          label="Nombre de la cuenta"
+          placeholder="Ej: Departamento de Matemática"
           value={nombreCuenta}
           onChange={(e) => setNombreCuenta(e.target.value)}
-          placeholder="Ej: Departamento de Matemática"
         />
-      </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Clave</label>
-        <input
+        <Input
+          label="Clave"
           type="password"
+          placeholder="Clave temporal o clave permanente"
           value={clave}
           onChange={(e) => setClave(e.target.value)}
-          placeholder="Clave temporal o clave permanente"
         />
-      </div>
 
-      <button
-        onClick={manejarAbrirCuenta}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
-        Abrir cuenta
-      </button>
+        <Button variante="primario" onClick={manejarAbrirCuenta}>
+          Abrir cuenta
+        </Button>
 
-      {mensaje && (
-        <p style={{ marginTop: "20px", color: "blue" }}>
-          {mensaje}
-        </p>
-      )}
+        <ErrorMessage mensaje={mensaje} />
+
+      </Card>
     </div>
   );
 }
+
+
