@@ -1,9 +1,16 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../../../../lib/supabase";
 import { obtenerNivel } from "../../../../lib/perfil";
+
+// Componentes reutilizables
+import Card from "@/components/cards/Card.jsx";
+import Input from "@/components/ui/Input.jsx";
+import Button from "@/components/buttons/Button.jsx";
+
+import styles from "./page.module.css";
 
 export default function CrearCuenta() {
   const redirigir = useRouter();
@@ -11,13 +18,12 @@ export default function CrearCuenta() {
 
   const [nombreCuenta, setNombreCuenta] = useState("");
   const [claveTemporal, setClaveTemporal] = useState("");
-  const [cuentaDepartamento, setCuentaDepartamento] = useState(false); // ← NUEVO
+  const [cuentaDepartamento, setCuentaDepartamento] = useState(false);
   const [mensaje, setMensaje] = useState("");
 
   const manejarCreacion = async () => {
     setMensaje("");
 
-    // Obtener usuario autenticado
     const { data: userData } = await supabase.auth.getUser();
     const user = userData?.user;
 
@@ -26,7 +32,6 @@ export default function CrearCuenta() {
       return;
     }
 
-    // Verificar nivel
     const nivel = await obtenerNivel(user.id);
 
     if (nivel !== 7 && nivel !== 8) {
@@ -34,13 +39,11 @@ export default function CrearCuenta() {
       return;
     }
 
-    // Validar campos
     if (!nombreCuenta.trim() || !claveTemporal.trim()) {
       setMensaje("Debes completar todos los campos.");
       return;
     }
 
-    // Crear cuenta con valores iniciales correctos
     const { error } = await supabase.from("Cuenta").insert({
       nombre: nombreCuenta.trim(),
       claveTemporal: claveTemporal.trim(),
@@ -55,7 +58,7 @@ export default function CrearCuenta() {
         "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenPerfil-porfecto.png",
       imagenFondoCuenta:
         "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg",
-      cuentaDepartamento: cuentaDepartamento // ← NUEVO
+      cuentaDepartamento: cuentaDepartamento
     });
 
     if (error) {
@@ -71,61 +74,46 @@ export default function CrearCuenta() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Crear cuenta</h1>
+    <div className="pantalla-centrada">
+      <Card>
+        <h1 className={styles.titulo}>Crear cuenta</h1>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Nombre de la cuenta</label>
-        <input
-          type="text"
+        <Input
+          label="Nombre de la cuenta"
+          placeholder="Ej: Departamento de Matemática"
           value={nombreCuenta}
           onChange={(e) => setNombreCuenta(e.target.value)}
-          placeholder="Ej: Departamento de Matemática"
         />
-      </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Clave temporal</label>
-        <input
+        <Input
+          label="Clave temporal"
           type="password"
+          placeholder="Clave temporal"
           value={claveTemporal}
           onChange={(e) => setClaveTemporal(e.target.value)}
-          placeholder="Clave temporal"
         />
-      </div>
 
-      {/* ================= CUENTA DEPARTAMENTAL ================= */}
-      <div style={{ marginTop: "20px" }}>
-        <label style={{ display: "block", marginBottom: "8px" }}>
-          ¿La cuenta es de un departamento oficial?
-        </label>
+        <div className={styles.campo}>
+          <label className={styles.label}>
+            ¿La cuenta es de un departamento oficial?
+          </label>
 
-        <select
-          value={cuentaDepartamento ? "true" : "false"}
-          onChange={(e) => setCuentaDepartamento(e.target.value === "true")}
-          style={{
-            padding: "8px",
-            borderRadius: "6px",
-            border: "1px solid #ccc"
-          }}
-        >
-          <option value="true">SI</option>
-          <option value="false">NO</option>
-        </select>
-      </div>
+          <select
+            value={cuentaDepartamento ? "true" : "false"}
+            onChange={(e) => setCuentaDepartamento(e.target.value === "true")}
+            className={styles.select}
+          >
+            <option value="true">SI</option>
+            <option value="false">NO</option>
+          </select>
+        </div>
 
-      <button
-        onClick={manejarCreacion}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
-        Crear cuenta
-      </button>
+        <Button variante="primario" onClick={manejarCreacion}>
+          Crear cuenta
+        </Button>
 
-      {mensaje && (
-        <p style={{ marginTop: "20px", color: "blue" }}>
-          {mensaje}
-        </p>
-      )}
+        {mensaje && <p className={styles.mensaje}>{mensaje}</p>}
+      </Card>
     </div>
   );
 }
