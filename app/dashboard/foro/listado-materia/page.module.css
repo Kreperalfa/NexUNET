@@ -1,0 +1,138 @@
+.contenedor {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Título con acento azul institucional */
+.titulo {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: var(--color-texto);
+  border-left: 6px solid var(--color-primario);
+  padding-left: 12px;
+}
+
+/* Filtros */
+.filtros {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.filtroBloque {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 260px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+/* Selects con más color */
+.select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  font-size: 15px;
+  color: var(--color-texto);
+  transition: 0.25s ease;
+}
+
+.select:hover {
+  border-color: var(--color-primario);
+  background: var(--color-tarjeta);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  background: var(--color-tarjeta);
+  box-shadow: 0 0 0 3px rgba(48, 84, 134, 0.15); /* azul primario con transparencia */
+}
+
+/* Bloque de información con barra azul */
+.bloqueInfo {
+  background: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.bloqueInfo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  background: var(--color-primario);
+  border-radius: 12px 12px 0 0;
+}
+
+.subtitulo {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-texto);
+}
+
+.textoInfo {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
+/* Lista de materias */
+.listaMaterias {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Tarjetas con más color y profundidad */
+.tarjetaMateria {
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-tarjeta);
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+/* Barra lateral azul para acento visual */
+.tarjetaMateria::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  background: var(--color-acento);
+  border-radius: 12px 0 0 12px;
+  opacity: 0.7;
+}
+
+.tarjetaMateria:hover {
+  background: var(--color-fondo);
+  border-color: var(--color-primario);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.nombreMateria {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-texto);
+}
