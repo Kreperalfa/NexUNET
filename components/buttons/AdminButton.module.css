@@ -1,0 +1,14 @@
+.botonAdmin {
+  padding: 12px;
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.botonAdmin:hover {
+  background: var(--color-primario-hover);
+}

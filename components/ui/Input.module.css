@@ -1,0 +1,57 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.etiqueta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.contenedorInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--color-texto);
+  background: #fbfcfe;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.inputConIcono {
+  padding-right: 44px;
+}
+
+.botonOjo {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-texto-suave);
+  transition: color 0.15s ease;
+}
+
+.botonOjo:hover {
+  color: var(--color-primario);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(15, 109, 102, 0.15);
+}

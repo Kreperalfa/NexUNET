@@ -1,0 +1,43 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  background: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+
+.card:hover {
+  background: var(--color-fondo);
+}
+
+.foto {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-borde);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nombre {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primario);
+  text-decoration: none;
+}
+
+.nombre:hover {
+  text-decoration: underline;
+}
+
+.correo {
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}

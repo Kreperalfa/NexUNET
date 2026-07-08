@@ -1,0 +1,15 @@
+.carouselContainer {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.mediaImage,
+.mediaVideo {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.swiper {
+  border-radius: 10px;
+}

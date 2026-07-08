@@ -1,0 +1,15 @@
+.botonGrande {
+  padding: 16px;
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.botonGrande:hover {
+  background: var(--color-primario-hover);
+}

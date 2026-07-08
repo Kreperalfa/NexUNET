@@ -1,0 +1,15 @@
+.tarjeta {
+  width: 100%;
+  max-width: 380px;
+  background: var(--color-tarjeta);
+  border-radius: 16px;
+  padding: 40px 32px;
+  box-shadow: 0 20px 40px -12px rgba(31, 42, 68, 0.18);
+}
+
+@media (max-width: 420px) {
+  .tarjeta {
+    padding: 32px 22px;
+    border-radius: 12px;
+  }
+}
