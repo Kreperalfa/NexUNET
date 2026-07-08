@@ -5,6 +5,13 @@ import { useRouter, useParams } from "next/navigation";
 import { establecerClavePermanente } from "../../../../../../lib/cuenta";
 import { esPasswordSegura } from "../../../../../../lib/validators";
 
+import styles from "./page.module.css";
+
+// Componentes reutilizables
+import SectionCard from "@/components/cards/SectionCard";
+import FormField from "@/components/form/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
+
 export default function EstablecerClave() {
   const redirigir = useRouter();
   const params = useParams();
@@ -14,6 +21,9 @@ export default function EstablecerClave() {
   const [claveConfirmar, setClaveConfirmar] = useState("");
   const [mensaje, setMensaje] = useState("");
 
+  /* ============================================================
+     MANEJAR ESTABLECER CLAVE PERMANENTE
+     ============================================================ */
   const manejarEstablecerClave = async () => {
     setMensaje("");
 
@@ -50,49 +60,44 @@ export default function EstablecerClave() {
     }
 
     setMensaje("Clave establecida correctamente.");
+
     setTimeout(() => {
       redirigir.push(`/dashboard/cuenta/abrir-cuenta/${idCuenta}/principal-cuenta`);
     }, 1000);
   };
 
+  /* ============================================================
+     RENDER
+     ============================================================ */
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Establecer clave permanente</h1>
+    <div className={styles.contenedor}>
+      <h1 className={styles.titulo}>Establecer clave permanente</h1>
 
-      <p>Esta será la clave oficial de la cuenta.</p>
+      <p className={styles.descripcion}>
+        Esta será la clave oficial de la cuenta. Asegúrate de que cumpla con los requisitos de seguridad.
+      </p>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Nueva clave</label>
-        <input
+      {mensaje && (
+        <p className={styles.mensaje}>{mensaje}</p>
+      )}
+
+      <SectionCard titulo="Nueva clave permanente">
+        <FormField
+          label="Nueva clave"
           type="password"
           value={clave}
           onChange={(e) => setClave(e.target.value)}
-          placeholder="Nueva clave permanente"
         />
-      </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Confirmar clave</label>
-        <input
+        <FormField
+          label="Confirmar clave"
           type="password"
           value={claveConfirmar}
           onChange={(e) => setClaveConfirmar(e.target.value)}
-          placeholder="Confirmar clave"
         />
-      </div>
+      </SectionCard>
 
-      <button
-        onClick={manejarEstablecerClave}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
-        Guardar clave
-      </button>
-
-      {mensaje && (
-        <p style={{ marginTop: "20px", color: "blue" }}>
-          {mensaje}
-        </p>
-      )}
+      <SubmitButton texto="Guardar clave" onClick={manejarEstablecerClave} />
     </div>
   );
 }

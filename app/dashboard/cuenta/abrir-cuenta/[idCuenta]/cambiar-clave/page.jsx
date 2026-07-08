@@ -6,6 +6,13 @@ import { obtenerCuentaCompleta, establecerClavePermanente } from "../../../../..
 import { esPasswordSegura } from "../../../../../../lib/validators";
 import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
 
+import styles from "./page.module.css";
+
+// Componentes reutilizables
+import SectionCard from "@/components/cards/SectionCard";
+import FormField from "@/components/form/FormField";
+import SubmitButton from "@/components/ui/SubmitButton";
+
 export default function CambiarClave() {
   const redirigir = useRouter();
   const params = useParams();
@@ -52,7 +59,7 @@ export default function CambiarClave() {
   }, [idCuenta]);
 
   if (!cuenta || !user) {
-    return <p style={{ padding: "20px" }}>Cargando...</p>;
+    return <p className={styles.cargando}>Cargando...</p>;
   }
 
   /* ============================================================
@@ -64,7 +71,7 @@ export default function CambiarClave() {
 
   if (!esAdmin) {
     return (
-      <p style={{ padding: "20px", color: "red" }}>
+      <p className={styles.errorPermisos}>
         No tienes permisos para cambiar la clave de esta cuenta.
       </p>
     );
@@ -111,43 +118,34 @@ export default function CambiarClave() {
      RENDER
      ============================================================ */
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Cambiar clave de la cuenta</h1>
+    <div className={styles.contenedor}>
+      <h1 className={styles.titulo}>Cambiar clave de la cuenta</h1>
 
-      <p>Esta será la nueva clave oficial de la cuenta.</p>
+      <p className={styles.descripcion}>
+        Esta será la nueva clave oficial de la cuenta. Asegúrate de que cumpla con los requisitos de seguridad.
+      </p>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Nueva clave</label>
-        <input
+      {mensaje && (
+        <p className={styles.mensaje}>{mensaje}</p>
+      )}
+
+      <SectionCard titulo="Nueva clave">
+        <FormField
+          label="Nueva clave"
           type="password"
           value={clave}
           onChange={(e) => setClave(e.target.value)}
-          placeholder="Nueva clave"
         />
-      </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <label>Confirmar clave</label>
-        <input
+        <FormField
+          label="Confirmar clave"
           type="password"
           value={claveConfirmar}
           onChange={(e) => setClaveConfirmar(e.target.value)}
-          placeholder="Confirmar clave"
         />
-      </div>
+      </SectionCard>
 
-      <button
-        onClick={manejarCambioClave}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
-      >
-        Guardar clave
-      </button>
-
-      {mensaje && (
-        <p style={{ marginTop: "20px", color: "blue" }}>
-          {mensaje}
-        </p>
-      )}
+      <SubmitButton texto="Guardar clave" onClick={manejarCambioClave} />
     </div>
   );
 }
