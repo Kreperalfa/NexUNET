@@ -561,6 +561,7 @@ __metadata:
     next: "npm:^16.2.6"
     react: "npm:^19.2.6"
     react-dom: "npm:^19.2.6"
+    swiper: "npm:^14.0.2"
   languageName: unknown
   linkType: soft
 
@@ -684,6 +685,13 @@ __metadata:
     babel-plugin-macros:
       optional: true
   checksum: 10c0/ace50e7ea5ae5ae6a3b65a50994c51fca6ae7df9c7ecfd0104c36be0b4b3a9c5c1a2374d16e2a11e256d0b20be6d47256d768ecb4f91ab390f60752a075780f5
+  languageName: node
+  linkType: hard
+
+"swiper@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "swiper@npm:14.0.2"
+  checksum: 10c0/5fe2a06908675cfbd415e8ea3dcfc72bf0ddcc379509bdce19e9187b91c7741566fb132b22464a1ff420f8913d9080cc0793f7f1ec5c04d634bb07155e9d8dbe
   languageName: node
   linkType: hard
 

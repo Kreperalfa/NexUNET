@@ -1,0 +1,39 @@
+:root {
+  /* Paleta institucional UNET: negro, blanco y azul (#305486),
+     tomado con muestreo de pixel exacto de la referencia confirmada
+     por el usuario (hue ≈ 215°, el más "azul puro" de las muestras
+     probadas). Las demás variantes se derivan del MISMO matiz,
+     solo cambiando claridad/saturación, para que nada se desvíe
+     hacia morado. */
+  --color-fondo: #f3f6f9;
+  --color-tarjeta: #ffffff;
+  --color-texto: #14151a;
+  --color-texto-suave: #4b6384;
+  --color-primario: #305486;
+  --color-primario-hover: #1e375b;
+  --color-acento: #305486;
+  --color-borde: #dee4ed;
+  --color-error-fondo: #fdecec;
+  --color-error-texto: #b3261e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--color-texto);
+  background: linear-gradient(180deg, var(--color-fondo) 0%, #e7ecf3 100%);
+}
+
+/* Utilidad reusable para centrar una tarjeta en pantalla completa
+   (login, register, recuperar contraseña, etc.) */
+.pantalla-centrada {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}

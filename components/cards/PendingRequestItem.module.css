@@ -1,0 +1,53 @@
+.pendienteItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: var(--color-fondo);
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  margin-top: 12px;
+}
+
+.pendienteFoto {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pendienteInfo {
+  flex: 1;
+}
+
+.pendienteNombre {
+  font-weight: 600;
+}
+
+.pendienteCorreo {
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+.pendienteBotones {
+  display: flex;
+  gap: 10px;
+}
+
+.botonAceptar {
+  padding: 8px 14px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.botonRechazar {
+  padding: 8px 14px;
+  background: #c62828;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

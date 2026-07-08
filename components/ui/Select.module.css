@@ -1,0 +1,33 @@
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  font-size: 15px;
+  color: var(--color-texto);
+  transition: 0.25s ease;
+}
+
+.select:hover {
+  border-color: var(--color-primario);
+  background: var(--color-tarjeta);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  background: var(--color-tarjeta);
+  box-shadow: 0 0 0 3px rgba(48, 84, 134, 0.15);
+}

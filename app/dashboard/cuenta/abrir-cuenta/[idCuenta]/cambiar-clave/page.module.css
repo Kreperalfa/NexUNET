@@ -1,0 +1,34 @@
+.contenedor {
+  max-width: 650px;
+  margin: auto;
+  padding: 28px;
+}
+
+.titulo {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  font-size: 15px;
+  color: var(--color-texto);
+  margin-bottom: 20px;
+}
+
+.mensaje {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--color-primario);
+}
+
+.cargando {
+  padding: 20px;
+  color: var(--color-texto);
+}
+
+.errorPermisos {
+  padding: 20px;
+  color: red;
+}
