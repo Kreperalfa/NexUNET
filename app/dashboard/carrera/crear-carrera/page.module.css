@@ -1,0 +1,116 @@
+/* Contenedor principal */
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Formulario */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grupoFormulario {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etiqueta {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-texto);
+}
+
+/* Botones del formulario */
+.botones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.botones button {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* Lista de carreras */
+.listaCarreras {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contenedor {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .formulario {
+    gap: 14px;
+  }
+
+  .grupoFormulario {
+    gap: 6px;
+  }
+
+  .etiqueta {
+    font-size: 13px;
+  }
+
+  .botones {
+    gap: 10px;
+  }
+
+  .botones button {
+    min-width: 120px;
+    padding: 10px 12px;
+  }
+
+  .listaCarreras {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contenedor {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .formulario {
+    gap: 12px;
+  }
+
+  .grupoFormulario {
+    gap: 6px;
+  }
+
+  .etiqueta {
+    font-size: 12px;
+  }
+
+  .botones {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  .botones button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .listaCarreras {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
