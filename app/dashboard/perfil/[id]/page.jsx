@@ -19,6 +19,7 @@ export default function PerfilPage() {
 
   const [perfil, setPerfil] = useState(null);
   const [user, setUser] = useState(null);
+  const [cacheBust, setCacheBust] = useState(Date.now()); // ⭐ estado para cache busting
 
   /* ================= CARGAR USUARIO AUTENTICADO ================= */
   useEffect(() => {
@@ -38,7 +39,10 @@ export default function PerfilPage() {
         .eq("id", id)
         .single();
 
-      if (!error) setPerfil(data);
+      if (!error) {
+        setPerfil(data);
+        setCacheBust(Date.now()); // ⭐ refresca cacheBust solo cuando se cargan datos nuevos
+      }
     }
 
     if (id) cargarDatos();
@@ -51,8 +55,8 @@ export default function PerfilPage() {
   return (
     <div className={styles.contenedor}>
       <UserProfileHeader
-        fondo={perfil.imagenFondo}
-        foto={perfil.imagenPerfil}
+        fondo={`${perfil.imagenFondo}?t=${cacheBust}`}
+        foto={`${perfil.imagenPerfil}?t=${cacheBust}`}
         nombre={perfil.nombre}
         correo={perfil.correoInstitucional}
       />
@@ -78,4 +82,3 @@ export default function PerfilPage() {
     </div>
   );
 }
-

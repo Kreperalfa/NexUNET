@@ -13,6 +13,7 @@ import styles from "./page.module.css";
 export default function ListaUsuariosPage() {
   const supabase = getSupabaseBrowserClient();
   const [usuarios, setUsuarios] = useState([]);
+  const [cacheBust, setCacheBust] = useState(Date.now()); // ⭐ estado para cache busting
 
   useEffect(() => {
     async function cargarUsuarios() {
@@ -21,7 +22,10 @@ export default function ListaUsuariosPage() {
         .select("id, nombre, imagenPerfil, correoInstitucional")
         .order("nombre", { ascending: true });
 
-      if (!error) setUsuarios(data);
+      if (!error) {
+        setUsuarios(data);
+        setCacheBust(Date.now()); // ⭐ refresca solo cuando se cargan datos nuevos
+      }
     }
 
     cargarUsuarios();
@@ -45,7 +49,7 @@ export default function ListaUsuariosPage() {
                 key={u.id}
                 id={u.id}
                 nombre={u.nombre}
-                imagenPerfil={u.imagenPerfil}
+                imagenPerfil={`${u.imagenPerfil}?t=${cacheBust}`} // ⭐ cache busting aplicado solo cuando hay cambios
                 correo={u.correoInstitucional}
               />
             ))}

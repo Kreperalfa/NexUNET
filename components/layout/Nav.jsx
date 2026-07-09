@@ -31,12 +31,14 @@ export default function Nav() {
     const [submenuAbierto, setSubmenuAbierto] = useState(false);
     const submenuRef = useRef(null);
     const router = useRouter();
+    const [cacheBust, setCacheBust] = useState(Date.now());
 
     useEffect(() => {
         async function cargar() {
             const resultado = await cargarPerfilUsuario();
             if (resultado.ok) {
                 setPerfil(resultado.perfil);
+                setCacheBust(Date.now());
             }
         }
         cargar();
@@ -75,9 +77,20 @@ export default function Nav() {
 
     const DetalleUsuario = () =>
         perfil && (
-            <Link href={`/dashboard/perfil/${perfil.id}`} className={styles.detalleUsuario}>
-                <img src={perfil.imagenPerfil} alt="" className={styles.avatar} />
-                <span>{perfil.correoInstitucional}</span>
+            <Link
+            href={`/dashboard/perfil/${perfil.id}`}
+            className={styles.detalleUsuario}
+            >
+            <img
+                src={
+                perfil.imagenPerfil
+                    ? `${perfil.imagenPerfil}?t=${cacheBust}` // ⭐ cache busting aplicado
+                    : "/default-user.png"
+                }
+                alt={`Foto de ${perfil.correoInstitucional}`}
+                className={styles.avatar}
+            />
+            <span>{perfil.correoInstitucional}</span>
             </Link>
         );
 
