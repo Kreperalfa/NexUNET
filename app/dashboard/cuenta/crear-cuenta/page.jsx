@@ -55,9 +55,9 @@ export default function CrearCuenta() {
       idCreador: user.id,
       descripcion: "",
       imagenCuenta:
-        "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenPerfil-porfecto.png",
+        "${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfiles/imagenPerfil-porfecto.png",
       imagenFondoCuenta:
-        "https://fdegweacfliuxqqecceg.supabase.co/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg",
+        "${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/perfiles/imagenFondo-pordefecto.jpg",
       cuentaDepartamento: cuentaDepartamento
     });
 
