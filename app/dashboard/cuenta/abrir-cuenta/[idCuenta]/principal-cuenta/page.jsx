@@ -499,7 +499,7 @@ export default function PrincipalCuenta() {
                     )}
                   </div>
 
-                  {/* Títulos */}
+                  {/* Título */}
                   {p.titulo && (
                     <h3 className={styles.publicacionTitulo}>{p.titulo}</h3>
                   )}
