@@ -131,7 +131,7 @@ export default function PublicarNoticia() {
       setTimeout(() => setProgreso(70), 700);
 
       const idPublicacion = await crearPublicacion({
-        titulo,
+        titulo, // ⭐ nuevo campo
         contenido,
         idCuenta,
         archivos,
