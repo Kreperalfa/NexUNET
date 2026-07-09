@@ -24,7 +24,7 @@ export default function PublicarNoticia() {
   const params = useParams();
   const idCuenta = params.idCuenta;
 
-  const [titulo, setTitulo] = useState("");        // ← NUEVO
+  const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
   const [cargando, setCargando] = useState(false);
   const [progreso, setProgreso] = useState(0);
@@ -108,10 +108,11 @@ export default function PublicarNoticia() {
      MANEJAR PUBLICACIÓN
      ============================================================ */
   async function manejarPublicacion() {
-    try {
-      setCargando(true);
-      setProgreso(10);
+    if (cargando) return; // ← BLOQUEO inmediato contra doble clic
+    setCargando(true);
+    setProgreso(10);
 
+    try {
       // Validación del título
       if (!titulo.trim()) {
         alert("Debes escribir un título para la noticia.");
@@ -130,7 +131,7 @@ export default function PublicarNoticia() {
       setTimeout(() => setProgreso(70), 700);
 
       const idPublicacion = await crearPublicacion({
-        titulo,                      // ← NUEVO
+        titulo,
         contenido,
         idCuenta,
         archivos,
@@ -273,7 +274,7 @@ export default function PublicarNoticia() {
       <SubmitButton
         texto={cargando ? "Publicando..." : "Publicar noticia"}
         onClick={manejarPublicacion}
-        disabled={cargando}
+        disabled={cargando} // ← asegura que el botón se deshabilite
       />
     </div>
   );

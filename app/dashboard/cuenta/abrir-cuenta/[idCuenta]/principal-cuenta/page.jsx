@@ -36,7 +36,7 @@ export default function PrincipalCuenta() {
   const params = useParams();
   const idCuenta = params.idCuenta;
   const router = useRouter();
-
+  const [cacheBust, setCacheBust] = useState(Date.now());
   const [cuenta, setCuenta] = useState(null);
   const [miembros, setMiembros] = useState([]);
   const [mensaje, setMensaje] = useState("");
@@ -81,6 +81,7 @@ export default function PrincipalCuenta() {
       setMiembros(miembrosConDecision);
       setMensaje("");
       setTipoMensaje(null);
+      setCacheBust(Date.now());
     } catch (error) {
       setMensaje("Error al cargar la cuenta");
       setTipoMensaje("error");
@@ -240,19 +241,19 @@ export default function PrincipalCuenta() {
       {/* Fondo */}
       <div
         className={styles.fondo}
-        style={{ backgroundImage: `url(${cuenta.imagenFondoCuenta})` }}
+        style={{ backgroundImage: `url(${cuenta.imagenFondoCuenta}?t=${cacheBust})` }}
       />
 
       {/* Foto */}
       <section className={styles.fotoContainer}>
         <img
-          src={cuenta.imagenCuenta}
+          src={`${cuenta.imagenCuenta}?t=${cacheBust}`}
           alt={`Imagen de perfil de ${cuenta.nombre}`}
           className={styles.foto}
         />
         <button
           className={styles.botonSecundario}
-          onClick={() => window.open(cuenta.imagenCuenta, "_blank")}
+          onClick={() => window.open(`${cuenta.imagenCuenta}?t=${cacheBust}`, "_blank")}
         >
           Ver foto
         </button>
@@ -280,7 +281,11 @@ export default function PrincipalCuenta() {
             {miembros.map((m) => (
               <li key={m.idUsuario} className={styles.adminItem}>
                 <img
-                  src={m.perfil?.imagenPerfil || "/default-user.png"}
+                  src={
+                    m.perfil?.imagenPerfil
+                      ? `${m.perfil.imagenPerfil}?t=${cacheBust}` // ⭐ cache busting aplicado
+                      : "/default-user.png"
+                  }
                   className={styles.adminFoto}
                 />
                 <div>
@@ -294,8 +299,7 @@ export default function PrincipalCuenta() {
                       className={`${styles.estado} ${
                         styles[
                           `estado${
-                            m.estado.charAt(0).toUpperCase() +
-                            m.estado.slice(1)
+                            m.estado.charAt(0).toUpperCase() + m.estado.slice(1)
                           }`
                         ]
                       }`}
@@ -310,6 +314,7 @@ export default function PrincipalCuenta() {
             ))}
           </ul>
         )}
+
       </SectionCard>
 
       {/* Opciones administrativas */}
@@ -444,8 +449,13 @@ export default function PrincipalCuenta() {
                   {/* Autor */}
                   <div className={styles.publicacionAutor}>
                     <img
-                      src={autor?.perfil?.imagenPerfil || "/default-user.png"}
+                      src={
+                        autor?.perfil?.imagenPerfil
+                          ? `${autor.perfil.imagenPerfil}?t=${cacheBust}` // ⭐ cache busting aplicado
+                          : "/default-user.png"
+                      }
                       className={styles.publicacionAutorFoto}
+                      alt={`Foto de ${autor?.perfil?.nombre || "Autor desconocido"}`}
                     />
                     <div>
                       <p className={styles.publicacionAutorNombre}>
@@ -456,6 +466,7 @@ export default function PrincipalCuenta() {
                       </time>
                     </div>
                   </div>
+
 
                   {/* Portada */}
                   <div
