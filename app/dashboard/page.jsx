@@ -15,7 +15,7 @@ const noticiasEjemplo = [
         id: 2,
         titulo: "Feria de pasantías 2026",
         descripcion:
-            "La cobra quiere queque.",
+            "Empresas aliadas visitarán la universidad para ofrecer oportunidades de pasantías a los estudiantes.",
         autor: "Bienestar Estudiantil",
         imagen: null,
         hashtags: ["pasantias"],
