@@ -1,0 +1,43 @@
+.detalleUsuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.correo {
+  font-size: 14px;
+  color: #fff;
+}
+
+/* ===========================
+   MÓVIL Y TABLET — SOLO FOTO
+   =========================== */
+@media (max-width: 700px) {
+
+  /* Ocultar el correo del usuario */
+  .correo {
+    display: none !important;
+  }
+
+  /* Centrar el avatar */
+  .detalleUsuario {
+    gap: 0 !important;
+    justify-content: center !important;
+  }
+
+  /* Foto más grande (40px) */
+  .avatar {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
