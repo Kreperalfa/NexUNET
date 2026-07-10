@@ -10,7 +10,8 @@ import {
 
 import {
   obtenerHashtagsPublicacion,
-  obtenerPublicacionesConMultimedia
+  obtenerPublicacionesConMultimedia,
+  borrarPublicacion
 } from "../../../../../../lib/publicacion";
 
 import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
@@ -57,7 +58,26 @@ export default function PrincipalCuenta() {
     };
     cargarUsuario();
   }, []);
+  /* ============================================================
+      BORRAR PUBLICACION
+  ============================================================ */
+  const manejarBorrarPublicacion = async (idPublicacion) => {
+    try {
+      const confirmado = window.confirm("¿Seguro que quieres borrar esta publicación?");
+      if (!confirmado) return;
 
+      await borrarPublicacion(idPublicacion);
+      setMensaje("Publicación borrada correctamente");
+      setTipoMensaje("success");
+
+      // Recargar publicaciones
+      await cargarPublicaciones();
+    } catch (error) {
+      console.error("Error borrando publicación:", error);
+      setMensaje("Error borrando publicación");
+      setTipoMensaje("error");
+    }
+  };
   /* ============================================================
      CARGAR CUENTA
      ============================================================ */
@@ -559,15 +579,7 @@ export default function PrincipalCuenta() {
                       {esAdmin && (
                         <button
                           className={styles.botonEliminar}
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                "¿Está seguro de que desea eliminar esta publicación?"
-                              )
-                            ) {
-                              console.log("Eliminar publicación:", p.idPublicacion);
-                            }
-                          }}
+                          onClick={() => manejarBorrarPublicacion(p.idPublicacion)}
                         >
                           Eliminar
                         </button>
