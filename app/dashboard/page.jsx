@@ -22,7 +22,7 @@ const noticiasEjemplo = [
     },
     {
         id: 3,
-        titulo: "Resultados del foro de Cálculo III",
+        titulo: "Milabegllo si es canson",
         descripcion:
             "Resumen de las dudas más frecuentes resueltas esta semana por los preparadores.",
         autor: "Preparaduría",
