@@ -1,171 +1,310 @@
+/* ===========================
+   CONTENEDOR PRINCIPAL
+   =========================== */
 .contenedor {
+  position: relative;
+  width: 100%;
+  z-index: 50;
+}
+
+/* ===========================
+   NAV EXPANDIDO
+   =========================== */
+.navExpandido {
+  background: var(--color-primario);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+  width: 100%;
   position: relative;
 }
 
-.navExpandido {
-  background: var(--color-primario);
-  border-radius: none;
-}
-
+/* ===========================
+   FILA SUPERIOR
+   =========================== */
 .fila {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 9px 14px 5px;
+  gap: 14px;
+  padding: 14px 22px;
+  overflow: visible;
 }
 
+/* ===========================
+   FILA INFERIOR
+   =========================== */
 .filaInferior {
-  padding: 5px 14px 9px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 22px;
+  border-top: 1px solid rgba(255,255,255,0.15);
 }
 
+/* ===========================
+   GRUPOS
+   =========================== */
 .grupo {
   display: flex;
   align-items: center;
-  gap: 3px;
-  position: relative;
+  gap: 12px;
+  overflow: visible;
 }
 
+/* ===========================
+   ENLACES
+   =========================== */
 .enlace {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   color: #fff;
   text-decoration: none;
-  font-size: 13px;
-  padding: 6px 9px;
-  border-radius: 8px;
-  white-space: nowrap;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
 .enlace:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
 }
 
+/* ===========================
+   BOTONES DE ÍCONO
+   =========================== */
 .botonIcono {
-  background: none;
+  background: rgba(255,255,255,0.06);
   border: none;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  padding: 6px;
+  border-radius: 10px;
+  padding: 8px;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
 .botonIcono:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
 }
 
+/* ===========================
+   SEPARADOR
+   =========================== */
 .separadorVertical {
   width: 1px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.25);
-  margin: 0 5px;
+  height: 24px;
+  background: rgba(255,255,255,0.25);
 }
 
-.detalleUsuario {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: #fff;
-  text-decoration: none;
-  padding: 5px 8px;
-  border-radius: 8px;
-  font-size: 12.5px;
-}
-
-.detalleUsuario:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.avatar {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.22);
-}
-
+/* ===========================
+   INSIGNIA DE NOTIFICACIONES
+   =========================== */
 .puntoInsignia {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 7px;
-  height: 7px;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-error-texto);
 }
 
-.contenedorSubmenu {
+/* ===========================
+   NAV COLAPSADO
+   =========================== */
+.navColapsado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-primario);
+  padding: 12px 22px;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.22);
   position: relative;
 }
 
-.submenu {
+/* ===========================
+   BOTÓN DE MINIMIZAR
+   =========================== */
+.pestanaToggle {
   position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 6px;
-  background: var(--color-tarjeta);
-  border: 1px solid var(--color-borde);
-  border-radius: none;
-  padding: 6px;
-  min-width: 170px;
-  z-index: 5;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 22px;
+  background: var(--color-primario);
+  border: none;
+  border-radius: 0 0 14px 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+  transition: background 0.25s ease;
+  z-index: 100;
 }
 
-.itemSubmenu {
-  display: block;
-  padding: 8px 10px;
-  border-radius: none;
-  font-size: 13px;
-  color: var(--color-texto);
-  text-decoration: none;
-}
-
-.itemSubmenu:hover {
-  background: var(--color-fondo);
+.pestanaToggle:hover {
+  background: var(--color-primario-hover);
 }
 
 .flechaArriba {
   transform: rotate(180deg);
 }
 
-.navColapsado {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--color-primario);
-  border-radius: none;
-  padding: 8px 14px;
+/* ===========================
+   RESPONSIVIDAD PROFESIONAL
+   =========================== */
+
+/* Tablets grandes */
+@media (max-width: 900px) {
+  .fila {
+    padding: 12px 18px;
+    gap: 10px;
+  }
+
+  .filaInferior {
+    padding: 8px 18px;
+  }
+
+  .enlace {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .botonIcono {
+    padding: 7px;
+  }
+
+  .grupo {
+    gap: 10px;
+  }
 }
 
-.pestanaToggle {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translate(-50%, 50%);
-  width: 46px;
-  height: 17px;
-  background: var(--color-primario);
-  border: none;
-  border-radius: 0 0 9px 9px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 6;
+/* Tablets pequeñas */
+@media (max-width: 700px) {
+  .fila {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .filaInferior {
+    padding: 7px 16px;
+  }
+
+  .enlace {
+    padding: 6px 10px;
+    font-size: 12.5px;
+  }
+
+  .botonIcono {
+    padding: 6px;
+  }
+
+  .pestanaToggle {
+    width: 42px;
+    height: 20px;
+  }
 }
 
-.pestanaToggle:hover {
-  background: var(--color-primario-hover);
+/* ===========================
+   MÓVIL Y TABLET — SOLO FOTO DEL USUARIO
+   =========================== */
+@media (max-width: 700px) {
+
+  /* Ocultar el correo del usuario */
+  :global(.correo) {
+    display: none !important;
+  }
+
+  /* Ajustar el contenedor del usuario */
+  :global(.detalleUsuario) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Foto más grande (40px) */
+  :global(.avatar) {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+  }
 }
+
+/* ===========================
+   Móviles — responsividad profesional
+   =========================== */
+@media (max-width: 500px) {
+
+  /* Ocultar texto de los enlaces */
+  .enlace span {
+    display: none;
+  }
+
+  .enlace {
+    padding: 6px;
+    gap: 0;
+  }
+
+  .enlace svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Compactar logout */
+  .botonIcono svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Compactar notificaciones */
+  .puntoInsignia {
+    width: 7px;
+    height: 7px;
+    top: 3px;
+    right: 3px;
+  }
+
+  /* Compactar toggle */
+  .pestanaToggle {
+    width: 38px;
+    height: 18px;
+  }
+
+  .fila {
+    padding: 8px 14px;
+    gap: 6px;
+  }
+
+  .filaInferior {
+    padding: 6px 14px;
+  }
+
+  .grupo {
+    gap: 8px;
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 380px) {
+  .botonIcono {
+    padding: 4px;
+  }
+
+  .enlace svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+
+
+
