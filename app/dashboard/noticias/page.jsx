@@ -108,10 +108,16 @@ export default function NoticiasPage() {
                         {p.cuenta?.nombre || "Cuenta desconocida"}
                       </p>
 
-                      {/* Autor justo debajo del nombre de la cuenta */}
+                      {/* Autor clickeable */}
                       {p.autor && (
                         <p className={styles.publicacionAutorSecundario}>
-                          Autor: {p.autor.nombre || "Autor desconocido"}
+                          Autor:{" "}
+                          <a
+                            href={`/dashboard/perfil/${p.autor.id}`}
+                            className={styles.publicacionAutorLink}
+                          >
+                            {p.autor.nombre || "Autor desconocido"}
+                          </a>
                         </p>
                       )}
 
