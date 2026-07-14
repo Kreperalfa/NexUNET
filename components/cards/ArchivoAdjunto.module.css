@@ -1,0 +1,119 @@
+/* ============================
+   TARJETA DEL ARCHIVO
+   ============================ */
+.archivoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+
+  background: #ffffff;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  border-left: 3px solid rgba(0, 82, 155, 0.25);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.archivoItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+/* ============================
+   ÍCONOS
+   ============================ */
+.icono {
+  font-size: 1.6rem;
+}
+
+.linkIcon {
+  color: var(--color-primario);
+}
+
+.fileIcon {
+  color: var(--color-acento);
+}
+
+/* ============================
+   INFORMACIÓN DEL ARCHIVO
+   ============================ */
+.archivoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.archivoNombre {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ============================
+   BOTÓN DESCARGAR / ABRIR ENLACE
+   ============================ */
+.archivoLink {
+  padding: 6px 12px;
+  background: var(--color-acento);
+  color: white;
+
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  transition: background 0.2s ease;
+  text-decoration: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  width: fit-content;
+}
+
+.archivoLink:hover {
+  background: #e67600;
+}
+
+/* ============================
+   PREVIEW DE IMÁGENES
+   ============================ */
+.archivoPreview {
+  margin-top: 0.6rem;
+  width: 100%;
+  max-width: 260px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ============================
+   RESPONSIVE — MÓVIL
+   ============================ */
+@media (max-width: 600px) {
+  .archivoItem {
+    padding: 0.8rem 1rem;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .icono {
+    font-size: 1.4rem;
+  }
+
+  .archivoPreview {
+    max-width: 100%;
+  }
+
+  .archivoLink {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+

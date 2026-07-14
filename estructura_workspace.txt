@@ -1,0 +1,179 @@
+Estructura completa del workspace NexUNET
+========================================
+
+NEXUNET/
+--------
+├── .editorconfig
+├── .env.local
+├── .gitattributes
+├── .gitignore
+├── .next/
+├── .yarn/
+├── .yarnrc.yml
+├── app/
+│   ├── creacion-perfil/
+│   │   └── page.js
+│   ├── dashboard/
+│   │   ├── carrera/
+│   │   │   └── crear-carrera/
+│   │   │       ├── page.jsx
+│   │   │       └── page.module.css
+│   │   ├── cuenta/
+│   │   │   ├── abrir-cuenta/
+│   │   │   │   ├── page.jsx
+│   │   │   │   ├── page.module.css
+│   │   │   │   └── [idCuenta]/
+│   │   │   │       ├── cambiar-clave/
+│   │   │   │       ├── editar-cuenta/
+│   │   │   │       ├── establecer-clave/
+│   │   │   │       ├── materia/
+│   │   │   │       ├── principal-cuenta/
+│   │   │   │       ├── publicar-foro/
+│   │   │   │       └── publicar-noticia/
+│   │   │   └── crear-cuenta/
+│   │   │       ├── page.jsx
+│   │   │       └── page.module.css
+│   │   ├── editar-perfil/
+│   │   │   ├── page.jsx
+│   │   │   └── page.module.css
+│   │   ├── foro/
+│   │   │   ├── listado-materia/
+│   │   │   │   ├── page.jsx
+│   │   │   │   └── page.module.css
+│   │   │   └── mostrar-foro/
+│   │   │       └── [idMateria]/
+│   │   │           ├── crear-hilo/
+│   │   │           │   ├── page.jsx
+│   │   │           │   └── page.module.css
+│   │   │           ├── hilo/
+│   │   │           │   └── [idHilo]/
+│   │   │           │       ├── page.jsx
+│   │   │           │       └── page.module.css
+│   │   │           ├── page.jsx
+│   │   │           ├── page.module.css
+│   │   │           └── responder-hilo/
+│   │   │               ├── page.jsx
+│   │   │               └── page.module.css
+│   │   ├── noticias/
+│   │   │   └── page.js
+│   │   ├── perfil/
+│   │   │   ├── [id]/
+│   │   │   │   ├── page.jsx
+│   │   │   │   └── page.module.css
+│   │   │   └── lista-usuarios/
+│   │   │       ├── page.jsx
+│   │   │       └── page.module.css
+│   │   ├── layout.jsx
+│   │   ├── layout.module.css
+│   │   ├── page.jsx
+│   │   └── page.module.css
+│   ├── layout.js
+│   ├── login/
+│   │   ├── page.jsx
+│   │   └── page.module.css
+│   ├── page.js
+│   ├── password/
+│   │   ├── change-password/
+│   │   │   ├── page.jsx
+│   │   │   └── page.module.css
+│   │   └── create-password/
+│   │       └── page.js
+│   ├── register/
+│   │   ├── page.jsx
+│   │   └── page.module.css
+│   └── verify-otp/
+│       └── page.js
+├── components/
+│   ├── buttons/
+│   │   ├── AdminButton.jsx
+│   │   ├── AdminButton.module.css
+│   │   ├── BigButton.jsx
+│   │   ├── BigButton.module.css
+│   │   ├── Button.jsx
+│   │   └── Button.module.css
+│   ├── cards/
+│   │   ├── Card.jsx
+│   │   ├── Card.module.css
+│   │   ├── CarreraCard.jsx
+│   │   ├── CarreraCard.module.css
+│   │   ├── MateriaCard.jsx
+│   │   ├── MateriaCard.module.css
+│   │   ├── PendingRequestItem.jsx
+│   │   ├── PendingRequestItem.module.css
+│   │   ├── PublicationCard.jsx
+│   │   ├── PublicationCard.module.css
+│   │   ├── SectionCard.jsx
+│   │   └── SectionCard.module.css
+│   ├── form/
+│   │   ├── FormField.jsx
+│   │   ├── FormField.module.css
+│   │   ├── TextareaField.jsx
+│   │   ├── TextareaField.module.css
+│   │   ├── UploadBox.jsx
+│   │   └── UploadBox.module.css
+│   ├── info/
+│   │   ├── EmptyState.jsx
+│   │   ├── EmptyState.module.css
+│   │   ├── InfoBanner.jsx
+│   │   └── InfoBanner.module.css
+│   ├── layout/
+│   │   ├── nav/
+│   │   │   ├── NavIcons.jsx
+│   │   │   ├── NavLevelMenu.jsx
+│   │   │   ├── NavLevelMenu.module.css
+│   │   │   ├── NavUser.jsx
+│   │   │   └── NavUser.module.css
+│   │   ├── Nav.jsx
+│   │   └── Nav.module.css
+│   ├── media/
+│   │   ├── MediaCarousel.jsx
+│   │   ├── MediaCarousel.module.css
+│   │   ├── YouTubePlayer.jsx
+│   │   ├── YouTubePlayer.module.css
+│   │   ├── YouTubeThumbnail.jsx
+│   │   └── YouTubeThumbnail.module.css
+│   ├── ui/
+│   │   ├── ErrorMessage.jsx
+│   │   ├── ErrorMessage.module.css
+│   │   ├── HashtagChip.jsx
+│   │   ├── HashtagChip.module.css
+│   │   ├── Input.jsx
+│   │   ├── Input.module.css
+│   │   ├── Loader.jsx
+│   │   ├── Loader.module.css
+│   │   ├── PageTitle.jsx
+│   │   ├── PageTitle.module.css
+│   │   ├── Select.jsx
+│   │   ├── Select.module.css
+│   │   ├── SubmitButton.jsx
+│   │   ├── SubmitButton.module.css
+│   │   ├── SuccessMessage.jsx
+│   │   └── SuccessMessage.module.css
+│   └── users/
+│       ├── UserListItem.jsx
+│       ├── UserListItem.module.css
+│       ├── UserProfileHeader.jsx
+│       └── UserProfileHeader.module.css
+├── jsconfig.json
+├── lib/
+│   ├── auth.js
+│   ├── carrera.js
+│   ├── cuenta.js
+│   ├── hilo.js
+│   ├── materia.js
+│   ├── perfil.js
+│   ├── publicacion.js
+│   ├── storage.js
+│   ├── subhilo.js
+│   ├── supabase.js
+│   ├── supabaseServer.js
+│   └── validators.js
+├── middleware.js
+├── next.config.js
+├── node_modules/
+├── organizacion.txt
+├── package.json
+├── README.md
+├── styles/
+│   └── globals.css
+└── yarn.lock

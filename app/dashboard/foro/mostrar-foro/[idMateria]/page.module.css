@@ -1,0 +1,28 @@
+.foroPageContainer {
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 82, 155, 0.06),
+    rgba(255, 140, 0, 0.06)
+  );
+  min-height: 100vh;
+}
+
+.foroPageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: var(--color-primario-oscuro);
+}
+
+.forosGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (max-width: 600px) {
+  .foroPageContainer {
+    padding: 1.2rem;
+  }
+}
+

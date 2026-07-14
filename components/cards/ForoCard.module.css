@@ -1,0 +1,116 @@
+/* ============================
+   TARJETA PRINCIPAL DEL FORO
+   ============================ */
+.foroCard {
+  background: #ffffff; /* ⭐ unicolor */
+  border-radius: 16px;
+  padding: 1.6rem;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* ⭐ sombra sobria */
+  border: 1px solid rgba(0, 82, 155, 0.18);   /* ⭐ borde suave */
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.foroCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* ============================
+   HEADER DEL FORO
+   ============================ */
+.foroHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.foroTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primario-oscuro);
+}
+
+.foroFecha {
+  margin-top: 0.3rem;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+/* ============================
+   BADGES
+   ============================ */
+.badgeOficial {
+  background: var(--color-primario);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 82, 155, 0.35);
+}
+
+.badgeNoOficial {
+  background: var(--color-acento);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.35);
+}
+
+/* ============================
+   BOTÓN PUBLICAR
+   ============================ */
+.publicarBtn {
+  margin-top: 0.8rem;
+  padding: 10px 16px;
+
+  background: var(--color-primario);
+  color: white;
+
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  box-shadow: 0 6px 18px rgba(0, 82, 155, 0.45);
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.publicarBtn:hover {
+  background: var(--color-primario-oscuro);
+  transform: translateY(-1px);
+}
+
+/* ============================
+   LISTA DE HILOS
+   ============================ */
+.hilosList {
+  margin-top: 1.4rem;
+  display: grid;
+  gap: 1.2rem;
+}
+
+.estadoTexto {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+/* ============================
+   RESPONSIVE — MÓVIL
+   ============================ */
+@media (max-width: 600px) {
+  .foroCard {
+    padding: 1.4rem;
+  }
+}
+
+
+

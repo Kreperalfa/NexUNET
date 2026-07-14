@@ -1,0 +1,172 @@
+/* ============================
+   TARJETA BASE
+   ============================ */
+.subCard {
+  position: relative;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid rgba(0, 82, 155, 0.25);
+
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.subCard:hover {
+  background: #fafafa;
+  transform: translateY(-2px);
+}
+
+/* Línea vertical estilo Reddit */
+.subCard::before {
+  content: "";
+  position: absolute;
+  left: -22px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(0, 82, 155, 0.15);
+  border-radius: 2px;
+}
+
+/* ============================
+   TEXTO
+   ============================ */
+.subMeta {
+  font-size: 0.85rem;
+  color: var(--color-primario-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.subContenido {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.6rem;
+  line-height: 1.5;
+}
+
+/* ============================
+   ARCHIVOS ADJUNTOS
+   ============================ */
+.subArchivos {
+  margin-top: 0.8rem;
+}
+
+.subSectionTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primario-oscuro);
+  margin-bottom: 0.4rem;
+}
+
+.subArchivoItem {
+  font-size: 0.9rem;
+  margin-top: 4px;
+  color: var(--color-primario-oscuro);
+}
+
+/* ============================
+   LINKS EXTERNOS
+   ============================ */
+.subLinks {
+  margin-top: 0.8rem;
+}
+
+.subLinkItem {
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.subLinkItem a {
+  color: var(--color-primario);
+  text-decoration: none;
+}
+
+.subLinkItem a:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   BOTÓN RESPONDER
+   ============================ */
+.subResponderBtn {
+  margin-top: 1rem;
+  padding: 8px 14px;
+  background: var(--color-acento);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(255, 140, 0, 0.35);
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.subResponderBtn:hover {
+  background: #e67600;
+  transform: translateY(-2px);
+}
+
+/* ============================
+   BOTÓN MOSTRAR/OCULTAR RESPUESTAS
+   ============================ */
+.toggleBtn {
+  margin-top: 1.2rem;
+  padding: 6px 12px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background: var(--color-acento);
+  color: white;
+
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.toggleBtn:hover {
+  background: #e67600;
+  transform: translateY(-2px);
+}
+
+/* ICONO FLECHA */
+.toggleIcon {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.toggleIcon.abierto {
+  transform: rotate(90deg);
+}
+
+/* ============================
+   RESPONSIVE — MÓVIL
+   ============================ */
+@media (max-width: 600px) {
+  .toggleBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .subCard {
+    padding: 0.9rem;
+  }
+}
+
+
+
+
+
+
+
