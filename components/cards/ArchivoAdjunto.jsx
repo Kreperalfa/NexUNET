@@ -6,6 +6,7 @@ import styles from "./ArchivoAdjunto.module.css";
 export default function ArchivoAdjunto({ archivo, hilo }) {
   const supabase = getSupabaseBrowserClient();
 
+  // ⭐ Detectar si es un link externo
   const esLink = archivo.nombreArchivo.startsWith("http");
 
   if (esLink) {
@@ -29,32 +30,28 @@ export default function ArchivoAdjunto({ archivo, hilo }) {
     );
   }
 
+  // ⭐ Carpetas correctas
   const materiaFolder = hilo.nombreMateria.replace(/\s+/g, "_").toLowerCase();
   const foroFolder = hilo.tipoForo.replace(/\s+/g, "_").toLowerCase();
 
-  // ⭐ RUTA REAL SEGÚN TU BUCKET
-  const ruta = `/hilo/${materiaFolder}/${foroFolder}/${hilo.idHilo}/${archivo.nombreArchivo}`;
+  // ⭐ Carpeta correcta: idSubHilo si existe, si no idHilo
+  const idCarpeta = archivo.idSubHilo || archivo.idHilo;
 
-  // ⭐ LOGS PARA VER QUÉ ESTÁ PASANDO
-  console.log("========== DEBUG ARCHIVO ==========");
-  console.log("Materia folder:", materiaFolder);
-  console.log("Foro folder:", foroFolder);
-  console.log("idHilo:", hilo.idHilo);
-  console.log("Archivo:", archivo.nombreArchivo);
-  console.log("Ruta generada:", ruta);
-  console.log("====================================");
+  // ⭐ Ruta interna del bucket
+  const ruta = `hilo/${materiaFolder}/${foroFolder}/${idCarpeta}/${archivo.nombreArchivo}`;
 
+  // ⭐ Obtener URL pública
   const { data } = supabase.storage.from("hilo").getPublicUrl(ruta);
   const url = data.publicUrl;
 
-  console.log("URL pública generada:", url);
-
+  // ⭐ Detectar tipo de archivo
   const esImagen =
     archivo.tipoArchivo?.includes("image") ||
     archivo.nombreArchivo.match(/\.(jpg|jpeg|png|gif)$/i);
 
   const esPDF = archivo.nombreArchivo.match(/\.pdf$/i);
 
+  // ⭐ Descargar archivo
   const descargarArchivo = async () => {
     console.log("Intentando descargar:", ruta);
 
@@ -102,6 +99,8 @@ export default function ArchivoAdjunto({ archivo, hilo }) {
     </div>
   );
 }
+
+
 
 
 

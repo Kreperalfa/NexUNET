@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./SubhiloCard.module.css";
+import ArchivoAdjunto from "./ArchivoAdjunto";
 
 export default function SubhiloCard({
   subhilo,
@@ -33,31 +34,21 @@ export default function SubhiloCard({
       {/* Contenido del subhilo */}
       <p className={styles.subContenido}>{subhilo.contenido}</p>
 
-      {/* Archivos adjuntos */}
+      {/* ⭐ Archivos adjuntos del subhilo */}
       {subhilo.archivos?.length > 0 && (
         <div className={styles.subArchivos}>
           <p className={styles.subSectionTitle}>Archivos adjuntos</p>
           <ul>
             {subhilo.archivos.map((a, idx) => (
               <li key={idx} className={styles.subArchivoItem}>
-                {a.tipoArchivo === "link" ? (
-                  <a
-                    href={a.nombreArchivo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {a.nombreArchivo}
-                  </a>
-                ) : (
-                  <span>{a.nombreArchivo}</span>
-                )}
+                <ArchivoAdjunto archivo={a} hilo={hilo} />
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      {/* Links externos */}
+      {/* ⭐ Links externos del subhilo */}
       {subhilo.links?.length > 0 && (
         <div className={styles.subLinks}>
           <p className={styles.subSectionTitle}>Links externos</p>
@@ -125,6 +116,7 @@ export default function SubhiloCard({
     </div>
   );
 }
+
 
 
 

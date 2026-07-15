@@ -25,7 +25,6 @@ export default function HiloDetallePage() {
 
   // ⭐ Cargar Hilo + Foro + Materia REAL
   const cargarHilo = async () => {
-    // 1️⃣ Obtener el hilo
     const { data: hiloData } = await supabase
       .from("Hilo")
       .select("idHilo, titulo, contenido, created_at, idUsuarioCreador, idForoFuente")
@@ -34,14 +33,12 @@ export default function HiloDetallePage() {
 
     if (!hiloData) return;
 
-    // 2️⃣ Obtener el foro del hilo
     const { data: foroData } = await supabase
       .from("Foro")
       .select("idMateria, tipo")
       .eq("idForo", hiloData.idForoFuente)
       .single();
 
-    // 3️⃣ Obtener la materia del foro
     const { data: materiaData } = await supabase
       .from("Materia")
       .select("nombreMateria")
@@ -55,13 +52,24 @@ export default function HiloDetallePage() {
     });
   };
 
+  // ⭐ Cargar archivos del hilo raíz
   const cargarArchivos = async () => {
     const { data } = await supabase
       .from("ArchivoHilo")
-      .select("nombreArchivo, tipoArchivo")
+      .select("nombreArchivo, tipoArchivo, idHilo, idSubHilo")
       .eq("idHilo", idHilo);
 
     if (data) setArchivos(data);
+  };
+
+  // ⭐ Cargar archivos de cada subhilo (CORREGIDO)
+  const cargarArchivosSubhilo = async (idSubHilo) => {
+    const { data } = await supabase
+      .from("ArchivoHilo")
+      .select("nombreArchivo, tipoArchivo, idSubHilo")
+      .eq("idSubHilo", idSubHilo);
+
+    return data || [];
   };
 
   const cargarSubHilos = async () => {
@@ -71,7 +79,22 @@ export default function HiloDetallePage() {
       .eq("idHilo", idHilo)
       .order("created_at", { ascending: true });
 
-    if (data) setSubhilos(data);
+    if (!data) return;
+
+    // ⭐ Agregar archivos y links a cada subhilo
+    const subhilosConArchivos = await Promise.all(
+      data.map(async (s) => {
+        const archivosSub = await cargarArchivosSubhilo(s.idSubHilo);
+
+        return {
+          ...s,
+          archivos: archivosSub.filter((a) => a.tipoArchivo !== "link"),
+          links: archivosSub.filter((a) => a.tipoArchivo === "link"),
+        };
+      })
+    );
+
+    setSubhilos(subhilosConArchivos);
   };
 
   useEffect(() => {
@@ -87,6 +110,7 @@ export default function HiloDetallePage() {
   if (cargando) return <div className={styles.hiloPageContainer}>Cargando hilo...</div>;
   if (!hilo) return <div className={styles.hiloPageContainer}>Hilo no encontrado.</div>;
 
+  // ⭐ Construir árbol con archivos y links incluidos
   function construirArbol(subhilos, idHilo) {
     const mapa = {};
     subhilos.forEach((s) => (mapa[s.idSubHilo] = { ...s, hijos: [] }));
@@ -175,6 +199,8 @@ export default function HiloDetallePage() {
     </div>
   );
 }
+
+
 
 
 
