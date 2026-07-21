@@ -501,8 +501,35 @@
     align-items: flex-start;
   }
 }
+.publicacionAcciones {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
 
+.botonAccion {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
 
+.botonAccion:hover {
+  color: #e63946; /* rojo para el hover */
+}
 
+.iconoAccion {
+  font-size: 18px;
+}
 
-
+.contadorAccion {
+  font-size: 14px;
+}
+.botonAccionActivo {
+  color: #e63946; /* rojo cuando ya dio like */
+}
