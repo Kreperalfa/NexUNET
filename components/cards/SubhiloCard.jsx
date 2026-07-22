@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./SubhiloCard.module.css";
 import ArchivoAdjunto from "./ArchivoAdjunto";
+import { getSupabaseBrowserClient } from "../../lib/supabase";
+import { darLike, quitarLike, tieneLike, contarLikes } from "../../lib/reacciones";
 
 export default function SubhiloCard({
   subhilo,
@@ -12,9 +14,48 @@ export default function SubhiloCard({
   redirigir,
   hijos
 }) {
+  const supabase = getSupabaseBrowserClient();
   const [mostrarHijos, setMostrarHijos] = useState(false);
 
   const tieneHijos = hijos && hijos.length > 0;
+
+  // Estados para likes del subhilo
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  // Cargar likes del subhilo
+  useEffect(() => {
+    const cargarLikes = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const idUsuario = userData?.user?.id;
+      if (!idUsuario) return;
+
+      const yaTiene = await tieneLike(idUsuario, subhilo.idSubHilo, "SUBHILO");
+      setLiked(yaTiene);
+
+      const total = await contarLikes(subhilo.idSubHilo, "SUBHILO");
+      setLikeCount(total);
+    };
+
+    cargarLikes();
+  }, [subhilo.idSubHilo]);
+
+  // Toggle like del subhilo
+  const toggleLike = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const idUsuario = userData?.user?.id;
+    if (!idUsuario) return;
+
+    if (liked) {
+      await quitarLike(idUsuario, subhilo.idSubHilo, "SUBHILO");
+      setLiked(false);
+      setLikeCount(prev => prev - 1);
+    } else {
+      await darLike(idUsuario, subhilo.idSubHilo, "SUBHILO");
+      setLiked(true);
+      setLikeCount(prev => prev + 1);
+    }
+  };
 
   return (
     <div
@@ -68,6 +109,14 @@ export default function SubhiloCard({
         </div>
       )}
 
+      {/* Botón de like del subhilo */}
+      <button
+        className={styles.likeBtn}
+        onClick={toggleLike}
+      >
+        {liked ? "❤️" : "🤍"} {likeCount}
+      </button>
+
       {/* Botón responder */}
       <button
         className={styles.subResponderBtn}
@@ -116,11 +165,3 @@ export default function SubhiloCard({
     </div>
   );
 }
-
-
-
-
-
-
-
-
