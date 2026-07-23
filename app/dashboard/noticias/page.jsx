@@ -15,6 +15,13 @@ import {
   contarLikes
 } from "../../../lib/reacciones";
 
+import {
+  crearComentario,
+  borrarComentario,
+  obtenerComentariosPublicacion,
+  contarComentarios
+} from "../../../lib/comentario";
+
 import { getSupabaseBrowserClient } from "../../../lib/supabase";
 
 import ErrorMessage from "@/components/ui/ErrorMessage";
@@ -35,6 +42,11 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [hashtags, setHashtags] = useState([]);
+
+  // Estados para comentarios
+  const [comentarios, setComentarios] = useState([]);
+  const [nuevoComentario, setNuevoComentario] = useState("");
+  const [comentariosCount, setComentariosCount] = useState(0);
 
   // Likes
   useEffect(() => {
@@ -58,7 +70,7 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     const cargarHashtags = async () => {
       try {
         const { data, error } = await supabase
-          .from("Publicacion_Hashtags") // ✅ nombre correcto
+          .from("Publicacion_Hashtags")
           .select("Hashtag(idHashtag, nombre)")
           .eq("idPublicacion", publicacion.idPublicacion);
 
@@ -74,6 +86,25 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     cargarHashtags();
   }, [publicacion.idPublicacion]);
 
+  // Comentarios
+  useEffect(() => {
+    if (!expandida) return;
+
+    const cargarComentarios = async () => {
+      try {
+        const data = await obtenerComentariosPublicacion(publicacion.idPublicacion);
+        setComentarios(data);
+
+        const total = await contarComentarios(publicacion.idPublicacion);
+        setComentariosCount(total);
+      } catch (err) {
+        console.error("Error cargando comentarios:", err);
+      }
+    };
+
+    cargarComentarios();
+  }, [expandida, publicacion.idPublicacion]);
+
   const toggleLike = async () => {
     if (!idUsuario) return;
     try {
@@ -88,6 +119,22 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
       }
     } catch (err) {
       console.error("Error toggling like:", err);
+    }
+  };
+
+  const enviarComentario = async () => {
+    if (!idUsuario || !nuevoComentario.trim()) return;
+    try {
+      await crearComentario(idUsuario, publicacion.idPublicacion, nuevoComentario);
+      setNuevoComentario("");
+
+      const data = await obtenerComentariosPublicacion(publicacion.idPublicacion);
+      setComentarios(data);
+
+      const total = await contarComentarios(publicacion.idPublicacion);
+      setComentariosCount(total);
+    } catch (err) {
+      console.error("Error creando comentario:", err);
     }
   };
 
@@ -213,11 +260,60 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
         </button>
 
         {/* Botón de comentarios */}
-        <button className={styles.botonAccion}>
+        <button
+          className={styles.botonAccion}
+          onClick={() => onToggleExpand(publicacion.idPublicacion)}
+        >
           <span className={styles.iconoAccion}>💬</span>
-          <span className={styles.contadorAccion}>0</span>
+          <span className={styles.contadorAccion}>{comentariosCount}</span>
         </button>
       </div>
+
+      {/* Sección de comentarios */}
+      {expandida && (
+        <div className={styles.comentariosSection}>
+          <h4>Comentarios</h4>
+
+          {/* Formulario */}
+          <div className={styles.comentarioForm}>
+            <input
+              type="text"
+              placeholder="Escribe un comentario..."
+              value={nuevoComentario}
+              onChange={(e) => setNuevoComentario(e.target.value)}
+              className={styles.comentarioInput}
+            />
+            <button onClick={enviarComentario} className={styles.comentarioBtn}>
+              Enviar
+            </button>
+          </div>
+
+          {/* Lista de comentarios */}
+          {comentarios.length === 0 ? (
+            <p className={styles.comentarioEmpty}>No hay comentarios aún.</p>
+          ) : (
+            <ul className={styles.comentarioList}>
+              {comentarios.map((c) => (
+                <li key={c.idComentario} className={styles.comentarioItem}>
+                  <img
+                    src={c.Usuario?.imagenCuenta || "/default-user.png"}
+                    className={styles.comentarioAutorFoto}
+                  />
+                  <div>
+                    <p className={styles.comentarioAutor}>
+                      {c.Usuario?.nombre || "Usuario desconocido"}
+                    </p>
+                    <p className={styles.comentarioContenido}>{c.contenido}</p>
+                    <small className={styles.comentarioFecha}>
+                      {new Date(c.created_at).toLocaleString()}
+                    </small>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </article>
   );
 }
