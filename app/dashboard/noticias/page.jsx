@@ -22,6 +22,12 @@ import {
   contarComentarios
 } from "../../../lib/comentario";
 
+import {
+  seguirCuenta,
+  dejarDeSeguirCuenta,
+  verificarSeguimiento
+} from "../../../lib/seguimiento";
+
 import { getSupabaseBrowserClient } from "../../../lib/supabase";
 
 import ErrorMessage from "@/components/ui/ErrorMessage";
@@ -47,6 +53,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
   const [comentarios, setComentarios] = useState([]);
   const [nuevoComentario, setNuevoComentario] = useState("");
   const [comentariosCount, setComentariosCount] = useState(0);
+
+  // Estado para seguimiento
+  const [isFollowing, setIsFollowing] = useState(false);
 
   // Likes
   useEffect(() => {
@@ -105,6 +114,21 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     cargarComentarios();
   }, [expandida, publicacion.idPublicacion]);
 
+  // Seguimiento
+  useEffect(() => {
+    if (!idUsuario || !publicacion.cuenta?.idCuenta) return;
+    const checkFollow = async () => {
+      try {
+        const sigue = await verificarSeguimiento(idUsuario, publicacion.cuenta.idCuenta);
+        setIsFollowing(sigue);
+      } catch (err) {
+        console.warn("Error verificando seguimiento:", err.message);
+        setIsFollowing(false);
+      }
+    };
+    checkFollow();
+  }, [idUsuario, publicacion.cuenta?.idCuenta]);
+
   const toggleLike = async () => {
     if (!idUsuario) return;
     try {
@@ -119,6 +143,21 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
       }
     } catch (err) {
       console.error("Error toggling like:", err);
+    }
+  };
+
+  const toggleFollow = async () => {
+    if (!idUsuario || !publicacion.cuenta?.idCuenta) return;
+    try {
+      if (isFollowing) {
+        await dejarDeSeguirCuenta(idUsuario, publicacion.cuenta.idCuenta);
+        setIsFollowing(false);
+      } else {
+        await seguirCuenta(idUsuario, publicacion.cuenta.idCuenta);
+        setIsFollowing(true);
+      }
+    } catch (err) {
+      console.error("Error toggling follow:", err);
     }
   };
 
@@ -146,7 +185,7 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
   const portada =
     publicacion.multimedia?.find((m) => m.tipoArchivo === "imagen")?.url || null;
 
-  return (
+    return (
     <article className={styles.publicacionCard}>
       {/* Autor */}
       <div className={styles.publicacionAutor}>
@@ -162,6 +201,15 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
           <p className={styles.publicacionAutorNombre}>
             {publicacion.cuenta?.nombre || "Cuenta desconocida"}
           </p>
+          {/* Botón de seguir */}
+          {publicacion.cuenta?.idCuenta && (
+            <button
+              className={`${styles.botonAccion} ${isFollowing ? styles.botonAccionActivo : ""}`}
+              onClick={toggleFollow}
+            >
+              {isFollowing ? "Siguiendo" : "Seguir"}
+            </button>
+          )}
           {publicacion.autor && (
             <p className={styles.publicacionAutorSecundario}>
               Autor:{" "}
@@ -296,7 +344,7 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
               {comentarios.map((c) => (
                 <li key={c.idComentario} className={styles.comentarioItem}>
                   <img
-                    src={c.Usuario?.imagenCuenta || "/default-user.png"}
+                    src={c.Usuario?.imagenPerfil || "/default-user.png"}
                     className={styles.comentarioAutorFoto}
                   />
                   <div>
@@ -317,6 +365,7 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     </article>
   );
 }
+
 /* ============================================================
    PÁGINA PRINCIPAL: NoticiasPage
    ============================================================ */
