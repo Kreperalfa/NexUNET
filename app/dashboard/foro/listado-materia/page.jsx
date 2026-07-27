@@ -143,6 +143,24 @@ export default function ListadoMateriasPage() {
           </div>
         ))}
       </div>
+
+      {/* Botón temporal para Candy */}
+      <div style={{ marginTop: "2rem", textAlign: "center" }}>
+        <button
+          onClick={() => router.push("/dashboard/candy-chat")}
+          style={{
+            padding: "1rem 2rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            backgroundColor: "#e0f7fa",
+            fontSize: "1.2rem",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+        >
+          Candy
+        </button>
+      </div>
     </div>
   );
 }
