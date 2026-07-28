@@ -24,20 +24,28 @@ export default function CandyChatPage() {
     const newMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, newMessage]);
 
-    // 🔹 Detectar intención
-    const intencion = detectarIntencion(input);
+    try {
+      // 🔹 Detectar intención (async porque consulta BD)
+      const intencion = await detectarIntencion(input);
 
-    // 🔹 Detectar contexto (async porque consulta Supabase)
-    const contexto = await extraerContexto(input);
+      // 🔹 Detectar contexto (async porque consulta Supabase)
+      const contexto = await extraerContexto(input);
 
-    // Respuesta temporal del bot mostrando intención + contexto
-    setTimeout(() => {
+      // 🔹 Respuesta del bot mostrando intención + contexto
       const botReply = {
         sender: "bot",
         text: `He detectado que tu consulta es de tipo: ${intencion.intencionesDetectadas.join(", ")}\n\nContexto detectado: ${JSON.stringify(contexto)}`
       };
+
       setMessages((prev) => [...prev, botReply]);
-    }, 1000);
+    } catch (error) {
+      // Manejo de errores para evitar que se rompa el chat
+      const botReply = {
+        sender: "bot",
+        text: `❌ Ocurrió un error al procesar tu consulta: ${error.message}`
+      };
+      setMessages((prev) => [...prev, botReply]);
+    }
 
     setInput("");
   };
