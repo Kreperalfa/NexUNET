@@ -5,6 +5,7 @@ import styles from "./candyChat.module.css";
 // 🔹 Importamos los módulos de Candy
 import { detectarIntencion } from "../../../lib/candy/intencion";
 import { extraerContexto } from "../../../lib/candy/contexto";
+import { ejecutarConsulta } from "../../../lib/candy/consulta"; // módulo con banderas
 
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
@@ -31,10 +32,44 @@ export default function CandyChatPage() {
       // 🔹 Detectar contexto (async porque consulta Supabase)
       const contexto = await extraerContexto(input);
 
-      // 🔹 Respuesta del bot mostrando intención + contexto
+      // 🔹 Ejecutar consulta con intención + contexto + detalles
+      const { resultados, banderas } = await ejecutarConsulta(
+        intencion.intencionesDetectadas,
+        contexto,
+        intencion.detalles
+      );
+
+      // 🔹 Formatear resultados para mostrarlos en el chat
+      let resultadosTexto = "";
+
+      if (resultados.noticias?.length) {
+        resultadosTexto += `📰 Noticias encontradas:\n${resultados.noticias.map(n => `- ${n.titulo} (por ${n.autor || "desconocido"})`).join("\n")}\n\n`;
+      }
+
+      if (resultados.hilos?.length) {
+        resultadosTexto += `🧵 Hilos encontrados:\n${resultados.hilos.map(h => `- ${h.titulo} (Materia: ${h.nombreMateria || "desconocida"})`).join("\n")}\n\n`;
+      }
+
+      if (!resultadosTexto) {
+        resultadosTexto = resultados.mensaje || "❌ No encontré coincidencias relevantes.";
+      }
+
+      // 🔹 Formatear banderas de depuración
+      let banderasTexto = "";
+      if (banderas?.length) {
+        banderasTexto = `🏳️ Banderas de depuración:\n${banderas.join("\n")}`;
+      }
+
+      // 🔹 Mostrar materia detectada en intención
+      let materiaTexto = "";
+      if (intencion.detalles?.materia?.length) {
+        materiaTexto = `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}`;
+      }
+
+      // 🔹 Respuesta del bot mostrando intención + contexto + resultados + banderas + materia
       const botReply = {
         sender: "bot",
-        text: `He detectado que tu consulta es de tipo: ${intencion.intencionesDetectadas.join(", ")}\n\nContexto detectado: ${JSON.stringify(contexto)}`
+        text: `He detectado que tu consulta es de tipo: ${intencion.intencionesDetectadas.join(", ")}\n\n${materiaTexto ? materiaTexto + "\n\n" : ""}Contexto detectado: ${JSON.stringify(contexto)}\n\n${resultadosTexto}${banderasTexto ? "\n\n" + banderasTexto : ""}`
       };
 
       setMessages((prev) => [...prev, botReply]);
