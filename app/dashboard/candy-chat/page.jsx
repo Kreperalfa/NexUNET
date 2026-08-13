@@ -2,10 +2,9 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./candyChat.module.css";
 
-// 🔹 Importamos los módulos de Candy
-import { detectarIntencion } from "../../../lib/candy/intencion";
-import { extraerContexto } from "../../../lib/candy/contexto";
-import { ejecutarConsulta } from "../../../lib/candy/consulta"; // módulo con banderas
+// 🔹 Importamos el orquestador y el formateador
+import { procesarConsulta } from "../../../lib/candy";
+import { formatearRespuesta } from "../../../lib/candy/formateador";
 
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
@@ -26,55 +25,32 @@ export default function CandyChatPage() {
     setMessages((prev) => [...prev, newMessage]);
 
     try {
-      // 🔹 Detectar intención (async porque consulta BD)
-      const intencion = await detectarIntencion(input);
+      // 🔹 Procesar consulta con Candy
+      const { resultados, banderas, intencion, contexto } = await procesarConsulta(input);
 
-      // 🔹 Detectar contexto (async porque consulta Supabase)
-      const contexto = await extraerContexto(input);
+      // 🔹 Formatear resultados para mostrar en el chat
+      const resultadosTexto = formatearRespuesta(resultados);
 
-      // 🔹 Ejecutar consulta con intención + contexto + detalles
-      const { resultados, banderas } = await ejecutarConsulta(
-        intencion.intencionesDetectadas,
-        contexto,
-        intencion.detalles
-      );
-
-      // 🔹 Formatear resultados para mostrarlos en el chat
-      let resultadosTexto = "";
-
-      if (resultados.noticias?.length) {
-        resultadosTexto += `📰 Noticias encontradas:\n${resultados.noticias.map(n => `- ${n.titulo} (por ${n.autor || "desconocido"})`).join("\n")}\n\n`;
-      }
-
-      if (resultados.hilos?.length) {
-        resultadosTexto += `🧵 Hilos encontrados:\n${resultados.hilos.map(h => `- ${h.titulo} (Materia: ${h.nombreMateria || "desconocida"})`).join("\n")}\n\n`;
-      }
-
-      if (!resultadosTexto) {
-        resultadosTexto = resultados.mensaje || "❌ No encontré coincidencias relevantes.";
-      }
-
-      // 🔹 Formatear banderas de depuración
-      let banderasTexto = "";
+      // 🔹 Opcional: mostrar depuración y entidad detectada
+      let debugTexto = "";
       if (banderas?.length) {
-        banderasTexto = `🏳️ Banderas de depuración:\n${banderas.join("\n")}`;
+        debugTexto += `🏳️ Banderas de depuración:\n${banderas.join("\n")}\n\n`;
       }
-
-      // 🔹 Mostrar materia detectada en intención
-      let materiaTexto = "";
       if (intencion.detalles?.materia?.length) {
-        materiaTexto = `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}`;
+        debugTexto += `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}\n`;
+      }
+      if (intencion.detalles?.entidadFinal) {
+        debugTexto += `🏢 Entidad detectada: ${intencion.detalles.entidadFinal.tipo} → ${intencion.detalles.entidadFinal.nombre}\n`;
       }
 
-      // 🔹 Respuesta del bot mostrando intención + contexto + resultados + banderas + materia
+      // 🔹 Respuesta del bot
       const botReply = {
         sender: "bot",
-        text: `He detectado que tu consulta es de tipo: ${intencion.intencionesDetectadas.join(", ")}\n\n${materiaTexto ? materiaTexto + "\n\n" : ""}Contexto detectado: ${JSON.stringify(contexto)}\n\n${resultadosTexto}${banderasTexto ? "\n\n" + banderasTexto : ""}`
+        text: `${resultadosTexto}${debugTexto ? "\n\n" + debugTexto : ""}`
       };
 
       setMessages((prev) => [...prev, botReply]);
     } catch (error) {
-      // Manejo de errores para evitar que se rompa el chat
       const botReply = {
         sender: "bot",
         text: `❌ Ocurrió un error al procesar tu consulta: ${error.message}`
@@ -95,7 +71,8 @@ export default function CandyChatPage() {
             key={index}
             className={msg.sender === "user" ? styles.userMessage : styles.botMessage}
           >
-            {msg.text}
+            {/* 🔹 Renderizamos texto con links */}
+            <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, "<br/>") }} />
           </div>
         ))}
         <div ref={chatEndRef} />
