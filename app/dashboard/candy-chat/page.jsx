@@ -2,9 +2,9 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./candyChat.module.css";
 
-// 🔹 Importamos los módulos de Candy
-import { detectarIntencion } from "../../../lib/candy/intencion";
-import { extraerContexto } from "../../../lib/candy/contexto";
+// 🔹 Importamos el orquestador y el formateador
+import { procesarConsulta } from "../../../lib/candy";
+import { formatearRespuesta } from "../../../lib/candy/formateador";
 
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
@@ -24,20 +24,39 @@ export default function CandyChatPage() {
     const newMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, newMessage]);
 
-    // 🔹 Detectar intención
-    const intencion = detectarIntencion(input);
+    try {
+      // 🔹 Procesar consulta con Candy
+      const { resultados, banderas, intencion, contexto } = await procesarConsulta(input);
 
-    // 🔹 Detectar contexto (async porque consulta Supabase)
-    const contexto = await extraerContexto(input);
+      // 🔹 Formatear resultados para mostrar en el chat
+      const resultadosTexto = formatearRespuesta(resultados);
 
-    // Respuesta temporal del bot mostrando intención + contexto
-    setTimeout(() => {
+      // 🔹 Opcional: mostrar depuración y entidad detectada
+      let debugTexto = "";
+      if (banderas?.length) {
+        debugTexto += `🏳️ Banderas de depuración:\n${banderas.join("\n")}\n\n`;
+      }
+      if (intencion.detalles?.materia?.length) {
+        debugTexto += `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}\n`;
+      }
+      if (intencion.detalles?.entidadFinal) {
+        debugTexto += `🏢 Entidad detectada: ${intencion.detalles.entidadFinal.tipo} → ${intencion.detalles.entidadFinal.nombre}\n`;
+      }
+
+      // 🔹 Respuesta del bot
       const botReply = {
         sender: "bot",
-        text: `He detectado que tu consulta es de tipo: ${intencion.intencionesDetectadas.join(", ")}\n\nContexto detectado: ${JSON.stringify(contexto)}`
+        text: `${resultadosTexto}${debugTexto ? "\n\n" + debugTexto : ""}`
+      };
+
+      setMessages((prev) => [...prev, botReply]);
+    } catch (error) {
+      const botReply = {
+        sender: "bot",
+        text: `❌ Ocurrió un error al procesar tu consulta: ${error.message}`
       };
       setMessages((prev) => [...prev, botReply]);
-    }, 1000);
+    }
 
     setInput("");
   };
@@ -52,7 +71,8 @@ export default function CandyChatPage() {
             key={index}
             className={msg.sender === "user" ? styles.userMessage : styles.botMessage}
           >
-            {msg.text}
+            {/* 🔹 Renderizamos texto con links */}
+            <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, "<br/>") }} />
           </div>
         ))}
         <div ref={chatEndRef} />
