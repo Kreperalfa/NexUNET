@@ -8,8 +8,16 @@ import { formatearRespuesta } from "../../../lib/candy/formateador";
 
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "¡Hola! Soy Candy 🤖, tu asistente académico. ¿Qué deseas buscar hoy?" }
+    { 
+      sender: "bot", 
+      text: `🐶 ¡Guau guau! Hola humano unetense, soy Candy, tu perrita académica de la UNET 🐾.
+            Escríbeme el nombre de una materia o tema (ejemplo: "Primer parcial de Matemática 4").
+            Yo olfatearé 🐕 entre los hilos y te mostraré los que coincidan.
+            Si no encuentro nada, te lo diré con un ladrido triste 😢. 
+            ¡Vamos humano, dime qué quieres buscar y Candy irá a husmear por ti!`
+    }
   ]);
+
   const [input, setInput] = useState("");
   const chatEndRef = useRef(null);
 
@@ -26,23 +34,21 @@ export default function CandyChatPage() {
 
     try {
       // 🔹 Procesar consulta con Candy
-      const { resultados, banderas, intencion, contexto } = await procesarConsulta(input);
+      const { resultados, intencion, contexto } = await procesarConsulta(input);
 
       // 🔹 Formatear resultados para mostrar en el chat
       const resultadosTexto = formatearRespuesta(resultados);
 
-      // 🔹 Opcional: mostrar depuración y entidad detectada
+      // 🔹 Opcional: mostrar entidad detectada (pero NO banderas)
       let debugTexto = "";
-      if (banderas?.length) {
-        debugTexto += `🏳️ Banderas de depuración:\n${banderas.join("\n")}\n\n`;
-      }
+/*
       if (intencion.detalles?.materia?.length) {
         debugTexto += `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}\n`;
       }
       if (intencion.detalles?.entidadFinal) {
         debugTexto += `🏢 Entidad detectada: ${intencion.detalles.entidadFinal.tipo} → ${intencion.detalles.entidadFinal.nombre}\n`;
       }
-
+*/
       // 🔹 Respuesta del bot
       const botReply = {
         sender: "bot",
