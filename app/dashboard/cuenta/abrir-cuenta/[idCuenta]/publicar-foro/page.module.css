@@ -1,0 +1,198 @@
+.contenedor {
+  padding: 20px;
+}
+
+.tituloPrincipal {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  font-size: 0.95rem;
+  color: var(--color-texto-suave);
+  margin-bottom: 20px;
+}
+
+.subtitulo {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--color-texto-suave);
+}
+
+.listaMaterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 30px;
+}
+
+.materiaBoton {
+  padding: 8px 14px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo-claro);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-texto);
+}
+
+.materiaActiva {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--color-primario);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.card {
+  background: var(--color-fondo-claro);
+  border: 1px solid var(--color-borde);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.tituloCard {
+  margin-bottom: 10px;
+}
+
+.mensaje {
+  margin-top: 10px;
+  color: var(--color-texto-suave);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  background: var(--color-fondo-input);
+  color: var(--color-texto);
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+/* Área de archivos */
+.fileDrop {
+  border: 2px dashed var(--color-borde);
+  background: var(--color-fondo-claro);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.fileDrop:hover {
+  background: var(--color-fondo-input);
+  border-color: var(--color-primario);
+}
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.fileText {
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+.fileList {
+  margin-top: 10px;
+  padding-left: 20px;
+  color: var(--color-texto-suave);
+}
+
+.fileItem {
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+
+/* Links externos */
+.agregarLink {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.listaLinks {
+  margin-top: 10px;
+  padding-left: 20px;
+  color: var(--color-texto-suave);
+}
+
+/* Botones finales */
+.botonesFinales {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.botonPrimario {
+  padding: 10px 16px;
+  background: var(--color-primario);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.botonCancelar {
+  padding: 10px 16px;
+  background: var(--color-borde);
+  color: var(--color-texto);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.botonDeshabilitado {
+  padding: 10px 16px;
+  background: var(--color-borde);
+  color: var(--color-texto-suave);
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
+}
+
+/* Responsividad profesional */
+@media (max-width: 480px) {
+  .agregarLink {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .listaMaterias {
+    flex-direction: column;
+  }
+
+  .fileDrop {
+    padding: 16px;
+  }
+
+  .fileText {
+    font-size: 0.85rem;
+  }
+
+  .botonesFinales {
+    flex-direction: column;
+  }
+}
+
+
+

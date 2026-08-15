@@ -1,0 +1,31 @@
+.subtitulo {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+  text-align: center;
+}
+
+.pie {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-borde);
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+/* Responsividad profesional */
+@media (max-width: 480px) {
+  .subtitulo {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+
+  .pie {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+  }
+}

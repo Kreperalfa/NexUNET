@@ -1,3 +1,5 @@
+//app\dashboard\cuenta\abrir-cuenta\[idCuenta]\principal-cuenta\page.jsx
+
 "use client";
 
 import { useEffect, useState } from "react";
