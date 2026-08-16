@@ -145,11 +145,12 @@
 /* ⭐ Botones sobre el carrusel */
 .heroBotones {
   position: absolute;
-  top: 25px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: flex;
   gap: 1rem;
+  z-index: 10; /* ⭐ asegura que quede SOBRE la imagen del carrusel */
 }
 
 .botonHero {
@@ -158,6 +159,7 @@
   color: white;
   border-radius: 10px;
   font-weight: 600;
+  text-decoration: none; /* ⭐ quita el subrayado nativo del <a> */
   transition: background 0.2s ease;
 }
 
@@ -172,6 +174,7 @@
   border-radius: 10px;
   font-weight: 600;
   border: 2px solid var(--azul-acento);
+  text-decoration: none; /* ⭐ quita el subrayado nativo del <a> */
   transition: background 0.2s ease, color 0.2s ease;
 }
 
@@ -347,4 +350,79 @@
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================================
+   ⭐ RESPONSIVE — evita que los botones se sobrepongan
+   con el texto del slider en pantallas pequeñas
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .heroCarrusel {
+    height: 420px;
+  }
+
+  /* ⭐ Mismo centrado que en pc; el texto del slider ya achicó su
+     tamaño más abajo así que no llega a chocar con los botones */
+  .heroBotones {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    gap: 0.7rem;
+  }
+
+  .botonHero,
+  .botonHeroSecundario {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .carruselTexto {
+    bottom: 20px;
+    max-width: 85%;
+    padding: 1rem 1.5rem;
+  }
+
+  .carruselTexto h1 {
+    font-size: 1.8rem;
+  }
+
+  .carruselTexto p {
+    font-size: 1rem;
+  }
+
+  .placeholderTitulo {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroCarrusel {
+    height: 460px;
+  }
+
+  .heroBotones {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .carruselTexto {
+    bottom: 15px;
+    max-width: 92%;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .carruselTexto h1 {
+    font-size: 1.4rem;
+  }
+
+  .carruselTexto p {
+    font-size: 0.85rem;
+  }
+
+  .placeholderTitulo {
+    font-size: 1.6rem;
+  }
 }

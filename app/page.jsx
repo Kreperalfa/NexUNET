@@ -12,16 +12,24 @@ export default function LandingPage() {
   const supabase = getSupabaseBrowserClient();
   const [slides, setSlides] = useState([]);
   const [index, setIndex] = useState(0);
+  const [cargando, setCargando] = useState(true);
 
   /* ⭐ Cargar contenido del carrusel */
   useEffect(() => {
     const cargarSlides = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("ContenidoLobby")
         .select("idContenido, titulo, contenido, imagen")
         .order("created_at", { ascending: false });
 
-      setSlides(data || []);
+      if (error) {
+        console.log("Error cargando slides:", error.message);
+        setSlides([]);
+      } else {
+        setSlides(data || []);
+      }
+
+      setCargando(false);
     };
 
     cargarSlides();
@@ -60,13 +68,20 @@ export default function LandingPage() {
             Iniciar sesión
           </Link>
 
-          {/* ⭐ Ruta corregida */}
           <Link href="/register" className={styles.botonHeroSecundario}>
             Registrarse
           </Link>
         </div>
 
-        {slideActual ? (
+        {/* ⭐ Estado de carga */}
+        {cargando && (
+          <div className={styles.carruselPlaceholder}>
+            <h1 className={styles.placeholderTitulo}>Cargando contenido...</h1>
+          </div>
+        )}
+
+        {/* ⭐ Si hay slides */}
+        {!cargando && slideActual && (
           <>
             <img
               key={slideActual.idContenido}
@@ -90,10 +105,15 @@ export default function LandingPage() {
               ))}
             </div>
           </>
-        ) : (
+        )}
+
+        {/* ⭐ Si NO hay slides */}
+        {!cargando && slides.length === 0 && (
           <div className={styles.carruselPlaceholder}>
             <h1 className={styles.placeholderTitulo}>Bienvenido a NexUNET</h1>
-            <p className={styles.placeholderTexto}>La plataforma institucional de la UNET.</p>
+            <p className={styles.placeholderTexto}>
+              La plataforma institucional de la UNET.
+            </p>
           </div>
         )}
       </section>

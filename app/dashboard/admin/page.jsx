@@ -32,18 +32,26 @@ const OPCIONES_POR_NIVEL = {
     { etiqueta: "Crear carrera", href: "/dashboard/carrera/crear-carrera" },
     { etiqueta: "Crear cuentas", href: "/dashboard/cuenta/crear-cuenta" },
     { etiqueta: "Cuentas institucionales", href: "/dashboard/admin/cuentas" },
+
+    /* ⭐ NUEVO BOTÓN */
+    { etiqueta: "Lobby institucional", href: "/dashboard/admin/lobby" },
   ],
   7: [
     { etiqueta: "Crear cuenta", href: "/dashboard/cuenta/crear-cuenta" },
     { etiqueta: "Crear carrera", href: "/dashboard/carrera/crear-carrera" },
     { etiqueta: "Gestionar usuarios", href: "/dashboard/admin/usuarios" },
     { etiqueta: "Gestionar entidades", href: "/dashboard/admin/entidades" },
+
+    /* ⭐ NUEVO BOTÓN */
+    { etiqueta: "Lobby institucional", href: "/dashboard/admin/lobby" },
   ],
   8: [
     { etiqueta: "Crear carrera", href: "/dashboard/carrera/crear-carrera" },
     { etiqueta: "Crear cuentas", href: "/dashboard/cuenta/crear-cuenta" },
     { etiqueta: "Gestionar usuarios", href: "/dashboard/admin/usuarios" },
-    { etiqueta: "Gestionar departamentos", href: "/dashboard/admin/departamentos" },
+
+    /* ⭐ NUEVO BOTÓN */
+    { etiqueta: "Lobby institucional", href: "/dashboard/admin/lobby" },
   ],
 };
 
@@ -174,6 +182,7 @@ export default function AdminPanelPage() {
         </div>
       </div>
 
+      {/* ⭐ GRID DE OPCIONES */}
       <div className={styles.grid}>
         {opciones.map((opcion, index) => (
           <div
