@@ -1,0 +1,350 @@
+/* ============================================================
+   ⭐ PALETA INSTITUCIONAL NEXUNET
+   ============================================================ */
+
+:root {
+  --azul-primario: #0a3d62;
+  --azul-primario-hover: #07405f;
+  --azul-acento: #1e6bb8;
+  --azul-suave: #e3f2fd;
+  --azul-fondo: #f4f9ff;
+
+  --gris-texto: #2c3e50;
+  --gris-suave: #6c7a89;
+
+  --color-tarjeta: #ffffff;
+  --color-borde: #dce3ec;
+}
+
+/* ============================================================
+   ⭐ CONTENEDOR GENERAL
+   ============================================================ */
+
+.contenedor {
+  min-height: 100vh;
+  background: var(--azul-fondo);
+  color: var(--gris-texto);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   ⭐ HEADER
+   ============================================================ */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2rem;
+  background: var(--azul-primario);
+  border-bottom: 3px solid var(--azul-acento);
+  color: white;
+}
+
+.logoGrupo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.logo {
+  width: 45px;
+  height: auto;
+}
+
+.nombreSistema {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--azul-primario);
+}
+
+/* ============================================================
+   ⭐ HERO CON CARRUSEL CENTRADO
+   ============================================================ */
+
+.heroCarrusel {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  background: var(--azul-primario);
+  border-bottom: 3px solid var(--azul-acento);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carruselImagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.55);
+  animation: fadeSlide 1.2s ease;
+}
+
+@keyframes fadeSlide {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ⭐ Texto del carrusel dinámico */
+.carruselTexto {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: white;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 1.2rem 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  animation: slideUp 0.8s ease;
+}
+
+.carruselTexto h1 {
+  font-size: 2.6rem;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0,0,0,0.6);
+}
+
+.carruselTexto p {
+  font-size: 1.2rem;
+  opacity: 1;
+  color: #f8f9fa;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+/* ⭐ Texto del placeholder (cuando no hay imágenes) */
+.carruselPlaceholder {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.placeholderTitulo {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0,0,0,0.7);
+}
+
+.placeholderTexto {
+  font-size: 1.3rem;
+  color: #f8f9fa;
+  text-shadow: 0 0 6px rgba(0,0,0,0.6);
+}
+
+/* ⭐ Botones sobre el carrusel */
+.heroBotones {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+}
+
+.botonHero {
+  padding: 0.7rem 1.4rem;
+  background: var(--azul-acento);
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.botonHero:hover {
+  background: var(--azul-primario-hover);
+}
+
+.botonHeroSecundario {
+  padding: 0.7rem 1.4rem;
+  background: white;
+  color: var(--azul-primario);
+  border-radius: 10px;
+  font-weight: 600;
+  border: 2px solid var(--azul-acento);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.botonHeroSecundario:hover {
+  background: var(--azul-acento);
+  color: white;
+}
+
+/* ⭐ Puntos del carrusel */
+.carruselControles {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.punto {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.punto:hover {
+  transform: scale(1.2);
+}
+
+.activo {
+  background: var(--azul-acento);
+}
+
+/* ============================================================
+   ⭐ AUTORIDADES UNIVERSITARIAS
+   ============================================================ */
+
+.autoridades {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--azul-suave);
+  border-top: 3px solid var(--azul-acento);
+}
+
+.autoridades h2 {
+  color: var(--azul-primario);
+}
+
+.gridAutoridades {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.cardAutoridad {
+  background: var(--color-tarjeta);
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ============================================================
+   ⭐ CONTACTO
+   ============================================================ */
+
+.contacto {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--azul-fondo);
+}
+
+.contacto h2 {
+  color: var(--azul-primario);
+}
+
+.gridContacto {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ============================================================
+   ⭐ MISIÓN Y VISIÓN
+   ============================================================ */
+
+.misionVision {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--azul-suave);
+}
+
+.misionVision h2 {
+  color: var(--azul-primario);
+}
+
+.gridMV {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.mvCard {
+  background: var(--color-tarjeta);
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ============================================================
+   ⭐ ENLACES INSTITUCIONALES
+   ============================================================ */
+
+.enlaces {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--azul-fondo);
+}
+
+.enlaces h2 {
+  color: var(--azul-primario);
+}
+
+.gridEnlaces {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.enlaceCard {
+  background: var(--azul-acento);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.enlaceCard:hover {
+  background: var(--azul-primario-hover);
+}
+
+/* ============================================================
+   ⭐ FOOTER
+   ============================================================ */
+
+.footer {
+  margin-top: auto;
+  padding: 1rem;
+  text-align: center;
+  background: var(--azul-primario);
+  color: white;
+  border-top: 3px solid var(--azul-acento);
+}
+
+/* ============================================================
+   ⭐ ANIMACIONES
+   ============================================================ */
+
+@keyframes fadeSlide {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getSupabaseBrowserClient } from "../../lib/supabase";
 import styles from "./page.module.css";
 import FeedPage from "./feed/page";
 import Link from "next/link";
@@ -10,6 +14,26 @@ const Icon = ({ children }) => (
 );
 
 export default function Dashboard() {
+    const supabase = getSupabaseBrowserClient();
+    const [usuario, setUsuario] = useState(null);
+
+    useEffect(() => {
+        const cargarUsuario = async () => {
+            const { data: auth } = await supabase.auth.getUser();
+            if (!auth?.user) return;
+
+            const { data } = await supabase
+                .from("Usuario")
+                .select("id, nombre, nivel")
+                .eq("id", auth.user.id)
+                .single();
+
+            setUsuario(data);
+        };
+
+        cargarUsuario();
+    }, []);
+
     return (
         <div className={styles.grid}>
 
@@ -62,6 +86,18 @@ export default function Dashboard() {
                         </Icon>
                         <span>Materias</span>
                     </Link>
+
+                    {/* ⭐ PANEL ADMINISTRATIVO — SOLO PARA NIVELES ALTOS */}
+                    {usuario?.nivel >= 4 && (
+                        <Link href="/dashboard/admin" className={styles.quickItem}>
+                            <Icon>
+                                <path d="M3 12h18" />
+                                <path d="M12 3v18" />
+                                <circle cx="12" cy="12" r="3" />
+                            </Icon>
+                            <span>Panel Administrativo</span>
+                        </Link>
+                    )}
 
                 </div>
             </section>

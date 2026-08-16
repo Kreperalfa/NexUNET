@@ -23,7 +23,7 @@ import {
   IconoForo
 } from "./nav/NavIcons";
 
-/* ⭐ Opciones por nivel (solo para el menú desplegable) */
+/* ⭐ Opciones por nivel */
 const OPCIONES_POR_NIVEL = {
   7: [
     { etiqueta: "Crear cuenta", href: "/dashboard/cuenta/crear-cuenta" },
@@ -43,6 +43,7 @@ export default function Nav() {
   const router = useRouter();
   const [cacheBust, setCacheBust] = useState(Date.now());
 
+  /* ⭐ Cargar perfil */
   useEffect(() => {
     async function cargar() {
       const resultado = await cargarPerfilUsuario();
@@ -57,6 +58,7 @@ export default function Nav() {
   const nivel = perfil?.nivel ?? null;
   const opcionesNivel = OPCIONES_POR_NIVEL[nivel] ?? [];
 
+  /* ⭐ Cerrar submenu al hacer clic fuera */
   useEffect(() => {
     function manejarClicFuera(e) {
       if (submenuRef.current && !submenuRef.current.contains(e.target)) {
@@ -74,13 +76,14 @@ export default function Nav() {
     setSubmenuAbierto(false);
   };
 
+  /* ⭐ Cerrar sesión → ahora va a la página principal "/" */
   const manejoLogout = async () => {
     const { ok, error } = await logoutUser();
     if (!ok) {
       alert(error);
       return;
     }
-    router.push("/login");
+    router.push("/"); // ⭐ Nueva ruta
   };
 
   return (
@@ -103,6 +106,12 @@ export default function Nav() {
               <Link href="/dashboard/cuenta/abrir-cuenta" className={styles.enlace}>
                 <IconoCuenta />
                 <span>Abrir cuenta</span>
+              </Link>
+
+              {/* ⭐ Directorio de cuentas */}
+              <Link href="/dashboard/cuenta" className={styles.enlace}>
+                <IconoCuenta />
+                <span>Directorio de cuentas</span>
               </Link>
 
               <Link href="/dashboard/foro/listado-materia" className={styles.enlace}>
@@ -221,7 +230,6 @@ export default function Nav() {
     </div>
   );
 }
-
 
 
 
