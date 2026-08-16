@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -23,6 +23,7 @@ import {
   IconoForo
 } from "./nav/NavIcons";
 
+/* ⭐ Opciones por nivel (solo para el menú desplegable) */
 const OPCIONES_POR_NIVEL = {
   7: [
     { etiqueta: "Crear cuenta", href: "/dashboard/cuenta/crear-cuenta" },
@@ -108,6 +109,15 @@ export default function Nav() {
                 <IconoForo />
                 <span>Abrir foro</span>
               </Link>
+
+              {/* ⭐ Panel Administrativo (solo niveles 4–8) */}
+              {nivel >= 4 && (
+                <Link href="/dashboard/admin" className={styles.enlace}>
+                  <IconoUsuarios />
+                  <span>Panel Admin</span>
+                </Link>
+              )}
+
             </div>
 
             {perfil && (
@@ -211,6 +221,7 @@ export default function Nav() {
     </div>
   );
 }
+
 
 
 
