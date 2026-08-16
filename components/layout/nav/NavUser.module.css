@@ -17,6 +17,7 @@
   font-size: 14px;
   color: #fff;
 }
+
 .info {
   display: flex;
   flex-direction: column;
@@ -39,6 +40,16 @@
     display: none !important;
   }
 
+  /* Ocultar el rol del usuario */
+  .rol {
+    display: none !important;
+  }
+
+  /* Evitar espacio vertical innecesario */
+  .info {
+    display: none !important;
+  }
+
   /* Centrar el avatar */
   .detalleUsuario {
     gap: 0 !important;
@@ -51,4 +62,3 @@
     height: 40px !important;
   }
 }
-
