@@ -12,15 +12,20 @@ import styles from "./Nav.module.css";
 import NavUser from "./nav/NavUser";
 import NavLevelMenu from "./nav/NavLevelMenu";
 
+/* ⭐ Íconos correctos */
 import {
   IconoInicio,
   IconoCampana,
   IconoSalir,
   IconoFlecha,
-  IconoUsuarios,
-  IconoNoticias,
-  IconoCuenta,
-  IconoForo
+
+  /* Íconos nuevos */
+  IconoListaUsuarios,
+  IconoNoticiasAlt,
+  IconoAbrirCuenta,
+  IconoDirectorio,
+  IconoForoAlt,
+  IconoPanelAdmin
 } from "./nav/NavIcons";
 
 /* ⭐ Opciones por nivel */
@@ -76,14 +81,14 @@ export default function Nav() {
     setSubmenuAbierto(false);
   };
 
-  /* ⭐ Cerrar sesión → ahora va a la página principal "/" */
+  /* ⭐ Cerrar sesión */
   const manejoLogout = async () => {
     const { ok, error } = await logoutUser();
     if (!ok) {
       alert(error);
       return;
     }
-    router.push("/"); // ⭐ Nueva ruta
+    router.push("/");
   };
 
   return (
@@ -93,36 +98,40 @@ export default function Nav() {
           <div className={styles.fila}>
             <div className={styles.grupo}>
 
+              {/* ⭐ Lista usuarios */}
               <Link href="/dashboard/perfil/lista-usuarios" className={styles.enlace}>
-                <IconoUsuarios />
+                <IconoListaUsuarios />
                 <span>Lista usuarios</span>
               </Link>
 
+              {/* ⭐ Noticias */}
               <Link href="/dashboard/noticias" className={styles.enlace}>
-                <IconoNoticias />
+                <IconoNoticiasAlt />
                 <span>Ver noticias</span>
               </Link>
 
+              {/* ⭐ Abrir cuenta */}
               <Link href="/dashboard/cuenta/abrir-cuenta" className={styles.enlace}>
-                <IconoCuenta />
+                <IconoAbrirCuenta />
                 <span>Abrir cuenta</span>
               </Link>
 
               {/* ⭐ Directorio de cuentas */}
               <Link href="/dashboard/cuenta" className={styles.enlace}>
-                <IconoCuenta />
+                <IconoDirectorio />
                 <span>Directorio de cuentas</span>
               </Link>
 
+              {/* ⭐ Foro */}
               <Link href="/dashboard/foro/listado-materia" className={styles.enlace}>
-                <IconoForo />
+                <IconoForoAlt />
                 <span>Abrir foro</span>
               </Link>
 
-              {/* ⭐ Panel Administrativo (solo niveles 4–8) */}
+              {/* ⭐ Panel Admin */}
               {nivel >= 4 && (
                 <Link href="/dashboard/admin" className={styles.enlace}>
-                  <IconoUsuarios />
+                  <IconoPanelAdmin />
                   <span>Panel Admin</span>
                 </Link>
               )}
@@ -230,7 +239,5 @@ export default function Nav() {
     </div>
   );
 }
-
-
 
 

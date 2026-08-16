@@ -34,6 +34,7 @@
   background: var(--color-tarjeta);
   box-shadow: 0 3px 8px rgba(0,0,0,0.06);
   position: relative;
+  overflow-x: hidden; /* ⭐ evita que el carrusel/video expandido rompa el margen */
 }
 
 /* Barra lateral azul institucional */
@@ -362,6 +363,19 @@
    RESPONSIVE
 ============================================ */
 @media (max-width: 768px) {
+  .contenedor {
+    padding: 18px 12px 40px;
+  }
+
+  .tituloFeed {
+    font-size: 1.35rem;
+    margin-bottom: 18px;
+  }
+
+  .feedLista {
+    gap: 20px;
+  }
+
   .publicacionCard,
   .hiloCard {
     padding: 14px;
@@ -375,18 +389,79 @@
 
   .portadaImagen,
   .portadaImagenExpandida {
+    max-height: 380px;
     border-radius: 10px;
+  }
+
+  .publicacionTitulo,
+  .hiloTitulo {
+    font-size: 1rem;
+  }
+
+  .publicacionContenido,
+  .hiloContenido {
+    font-size: 0.9rem;
+  }
+
+  .publicacionAccionesIG {
+    gap: 12px;
+  }
+
+  .likeButtonIG {
+    font-size: 1.4rem;
+  }
+
+  .comentariosButtonIG {
+    font-size: 1.2rem;
   }
 }
 
 @media (max-width: 480px) {
+  .contenedor {
+    padding: 14px 10px 32px;
+  }
+
+  .tituloFeed {
+    font-size: 1.2rem;
+    padding-left: 10px;
+  }
+
   .publicacionCard,
   .hiloCard {
     padding: 12px;
   }
 
+  .portadaImagen,
+  .portadaImagenExpandida {
+    max-height: 300px;
+  }
+
+  .publicacionAutorFoto,
+  .hiloAutorFoto {
+    width: 34px;
+    height: 34px;
+  }
+
+  .publicacionAutorNombre,
+  .hiloAutorNombre {
+    font-size: 0.9rem;
+  }
+
+  .comentarioFormIG {
+    flex-direction: column;
+  }
+
+  .comentarioBtnIG {
+    width: 100%;
+  }
+
   .comentarioAutorFotoIG {
     width: 32px;
     height: 32px;
+  }
+
+  .botonExpandir {
+    width: 100%;
+    text-align: center;
   }
 }

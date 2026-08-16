@@ -37,6 +37,8 @@ export default function NavUser({ perfil, cacheBust }) {
 
       <div className={styles.info}>
         <span className={styles.correo}>{perfil.correoInstitucional}</span>
+
+        {/* ⭐ Rol con responsividad */}
         <span className={styles.rol}>{rol}</span>
       </div>
     </Link>

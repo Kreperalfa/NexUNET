@@ -1,3 +1,5 @@
+//app\dashboard\noticias\page.jsx
+
 "use client";
 
 import { useEffect, useState } from "react";

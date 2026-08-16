@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 import Loader from "@/components/ui/Loader";
@@ -11,7 +12,8 @@ import YouTubePlayer from "@/components/media/YouTubePlayer";
 import YouTubeThumbnail from "@/components/media/YouTubeThumbnail";
 
 import {
-  obtenerHashtagsPublicacion
+  obtenerHashtagsPublicacion,
+  obtenerPublicacionesCompletas
 } from "@/lib/publicacion";
 
 import {
@@ -36,6 +38,7 @@ export default function FeedPage() {
   const [userLoaded, setUserLoaded] = useState(false); // ← CLAVE
   const [feed, setFeed] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [cacheBust] = useState(Date.now());
 
   /* ============================
      1) CARGAR USUARIO UNA SOLA VEZ
@@ -58,15 +61,11 @@ export default function FeedPage() {
 
     const cargarFeed = async () => {
       try {
-        // PUBLICACIONES
-        const { data: publicaciones } = await supabase
-          .from("Publicacion")
-          .select(`
-            *,
-            autor:Usuario(id, nombre, imagenPerfil),
-            multimedia:MultimediaPublicacion(*)
-          `)
-          .order("fechaCreacion", { ascending: false });
+        // PUBLICACIONES (mismo helper que usa Noticias, ya trae la cuenta)
+        const resultadoPublicaciones = await obtenerPublicacionesCompletas();
+        const publicaciones = resultadoPublicaciones.ok
+          ? resultadoPublicaciones.publicaciones
+          : [];
 
         // HILOS
         const { data: hilos } = await supabase
@@ -130,8 +129,8 @@ export default function FeedPage() {
               <PublicacionIGFeed
                 key={`pub-${item.idPublicacion}`}
                 publicacion={item}
-                autor={item.autor}
                 user={user}
+                cacheBust={cacheBust}
               />
             );
           }
@@ -155,7 +154,9 @@ export default function FeedPage() {
 /* ============================================================
    PUBLICACIÓN IG — CARGA DIFERIDA + LIKES INICIALES
 ============================================================ */
-function PublicacionIGFeed({ publicacion, autor, user }) {
+function PublicacionIGFeed({ publicacion, user, cacheBust }) {
+  const router = useRouter();
+
   const [expandida, setExpandida] = useState(false);
 
   const [hashtags, setHashtags] = useState([]);
@@ -262,12 +263,25 @@ function PublicacionIGFeed({ publicacion, autor, user }) {
     <article className={styles.publicacionCard}>
       <div className={styles.publicacionAutor}>
         <img
-          src={autor?.imagenPerfil || "/default-user.png"}
+          src={
+            publicacion.cuenta?.imagenCuenta
+              ? `${publicacion.cuenta.imagenCuenta}?t=${cacheBust}`
+              : "/default-user.png"
+          }
           className={styles.publicacionAutorFoto}
+          onClick={() =>
+            router.push(`/dashboard/cuenta/abrir-cuenta/${publicacion.cuenta.idCuenta}`)
+          }
+          style={{ cursor: "pointer" }}
         />
         <div>
-          <p className={styles.publicacionAutorNombre}>
-            {autor?.nombre || "Autor desconocido"}
+          <p
+            className={styles.publicacionAutorNombre}
+            onClick={() =>
+              router.push(`/dashboard/cuenta/abrir-cuenta/${publicacion.cuenta.idCuenta}`)
+            }
+          >
+            {publicacion.cuenta?.nombre || "Cuenta desconocida"}
           </p>
           <time className={styles.publicacionFecha}>
             {new Date(publicacion.fechaCreacion).toLocaleString()}
@@ -451,4 +465,3 @@ function HiloIGFeed({ hilo }) {
     </article>
   );
 }
-
