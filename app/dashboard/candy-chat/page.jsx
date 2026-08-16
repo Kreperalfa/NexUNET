@@ -1,10 +1,15 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import styles from "./candyChat.module.css";
 
 // 🔹 Importamos el orquestador y el formateador
 import { procesarConsulta } from "../../../lib/candy";
 import { formatearRespuesta } from "../../../lib/candy/formateador";
+
+// 🔹 Importamos la imagen de Candy
+import candyIcon from "@/resources/candy-hablando.jpeg";
 
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
@@ -39,16 +44,8 @@ export default function CandyChatPage() {
       // 🔹 Formatear resultados para mostrar en el chat
       const resultadosTexto = formatearRespuesta(resultados);
 
-      // 🔹 Opcional: mostrar entidad detectada (pero NO banderas)
       let debugTexto = "";
-/*
-      if (intencion.detalles?.materia?.length) {
-        debugTexto += `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}\n`;
-      }
-      if (intencion.detalles?.entidadFinal) {
-        debugTexto += `🏢 Entidad detectada: ${intencion.detalles.entidadFinal.tipo} → ${intencion.detalles.entidadFinal.nombre}\n`;
-      }
-*/
+
       // 🔹 Respuesta del bot
       const botReply = {
         sender: "bot",
@@ -75,12 +72,34 @@ export default function CandyChatPage() {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={msg.sender === "user" ? styles.userMessage : styles.botMessage}
+            className={
+              msg.sender === "user"
+                ? styles.userMessage
+                : styles.botMessage
+            }
           >
-            {/* 🔹 Renderizamos texto con links */}
-            <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, "<br/>") }} />
+            {/* ⭐ Avatar del bot */}
+            {msg.sender === "bot" && (
+              <div className={styles.botAvatarWrapper}>
+                <Image
+                  src={candyIcon}
+                  alt="Candy"
+                  fill
+                  sizes="40px"
+                  loading="eager"
+                  className={styles.botAvatar}
+                />
+              </div>
+            )}
+
+            {/* ⭐ Burbuja del mensaje */}
+            <div
+              className={styles.messageBubble}
+              dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, "<br/>") }}
+            />
           </div>
         ))}
+
         <div ref={chatEndRef} />
       </div>
 

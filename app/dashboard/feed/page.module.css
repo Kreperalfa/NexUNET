@@ -1,0 +1,392 @@
+/* ============================================
+   CONTENEDOR GENERAL DEL FEED
+============================================ */
+.contenedor {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+/* Título con acento azul institucional */
+.tituloFeed {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--color-texto);
+  border-left: 6px solid var(--color-primario);
+  padding-left: 12px;
+}
+
+.feedLista {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ============================================
+   PUBLICACIÓN IG MEJORADA — ESTILO NEXUNET
+============================================ */
+.publicacionCard {
+  border-radius: 14px;
+  border: 1px solid var(--color-borde);
+  padding: 18px;
+  background: var(--color-tarjeta);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+/* Barra lateral azul institucional */
+.publicacionCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  background: var(--color-acento);
+  border-radius: 14px 0 0 14px;
+  opacity: 0.7;
+}
+
+/* Autor */
+.publicacionAutor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.publicacionAutorFoto {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-borde);
+}
+
+.publicacionAutorNombre {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.publicacionFecha {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+}
+
+/* Portada */
+.portadaContainer,
+.portadaContainerExpandida {
+  margin: 12px 0;
+}
+
+.portadaImagen,
+.portadaImagenExpandida {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.portadaSinImagen {
+  width: 100%;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  background: var(--color-fondo);
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+/* Título */
+.publicacionTitulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--color-texto);
+}
+
+/* Contenido */
+.publicacionContenido {
+  font-size: 0.95rem;
+  color: var(--color-texto);
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+
+/* Hashtags */
+.publicacionHashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.publicacionHashtags span {
+  background: var(--color-fondo);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--color-primario);
+  border: 1px solid var(--color-borde);
+}
+
+/* ============================================
+   ACCIONES IG (like + comentarios)
+============================================ */
+.publicacionAccionesIG {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.likeButtonIG {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  color: var(--color-texto);
+}
+
+.likeButtonIG:hover {
+  transform: scale(1.15);
+}
+
+.likeButtonIGActivo {
+  color: #ff3040;
+}
+
+.likeCountIG {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.comentariosButtonIG {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  color: var(--color-texto);
+}
+
+.comentariosButtonIG:hover {
+  transform: scale(1.1);
+}
+
+/* Expandir */
+.botonExpandir {
+  margin-top: 14px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-tarjeta);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  color: var(--color-texto);
+}
+
+.botonExpandir:hover {
+  background: var(--color-fondo);
+}
+
+/* ============================================
+   COMENTARIOS IG MEJORADOS
+============================================ */
+.comentariosSectionIG {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-borde);
+}
+
+.comentariosTituloIG {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--color-texto);
+}
+
+.comentarioFormIG {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.comentarioInputIG {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  font-size: 0.9rem;
+}
+
+.comentarioBtnIG {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primario);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.comentarioListIG {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comentarioItemIG {
+  display: flex;
+  gap: 12px;
+}
+
+.comentarioAutorFotoIG {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comentarioAutorIG {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.comentarioContenidoIG {
+  font-size: 0.9rem;
+  color: var(--color-texto);
+}
+
+.comentarioFechaIG {
+  font-size: 0.75rem;
+  color: var(--color-texto-suave);
+}
+
+.comentarioEmptyIG {
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+  font-style: italic;
+}
+
+/* ============================================
+   HILO IG MEJORADO
+============================================ */
+.hiloCard {
+  border-radius: 14px;
+  border: 1px solid var(--color-borde);
+  padding: 18px;
+  background: var(--color-tarjeta);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.hiloCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 6px;
+  background: var(--color-acento);
+  border-radius: 14px 0 0 14px;
+  opacity: 0.7;
+}
+
+.hiloAutor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.hiloAutorFoto {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-borde);
+}
+
+.hiloAutorNombre {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.hiloFecha {
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+}
+
+.hiloTitulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--color-texto);
+}
+
+.hiloContenido {
+  font-size: 0.95rem;
+  color: var(--color-texto);
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+
+.hiloBoton {
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primario);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hiloBoton:hover {
+  background: var(--color-acento);
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 768px) {
+  .publicacionCard,
+  .hiloCard {
+    padding: 14px;
+  }
+
+  .publicacionAutorFoto,
+  .hiloAutorFoto {
+    width: 38px;
+    height: 38px;
+  }
+
+  .portadaImagen,
+  .portadaImagenExpandida {
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .publicacionCard,
+  .hiloCard {
+    padding: 12px;
+  }
+
+  .comentarioAutorFotoIG {
+    width: 32px;
+    height: 32px;
+  }
+}

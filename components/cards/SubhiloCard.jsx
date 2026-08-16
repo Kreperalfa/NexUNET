@@ -64,12 +64,24 @@ export default function SubhiloCard({
         marginLeft: `clamp(0px, ${nivel * 32}px, 200px)`
       }}
     >
-      {/* Información del usuario que respondió */}
+      {/* ⭐ Información del usuario que respondió */}
       <div className={styles.subMeta}>
-        <span>
-          Respuesta del usuario: <strong>{subhilo.idUsuarioCreador}</strong>
+        <div className={styles.subAutorBox}>
+          <img
+            src={subhilo.autor?.imagenPerfil || "/default-user.png"}
+            className={styles.subAutorFoto}
+          />
+
+          <span className={styles.subAutorNombre}>
+            {subhilo.autor?.nombre ||
+              subhilo.autor?.correoInstitucional ||
+              subhilo.idUsuarioCreador}
+          </span>
+        </div>
+
+        <span className={styles.subFecha}>
+          {new Date(subhilo.created_at).toLocaleString()}
         </span>
-        <span>{new Date(subhilo.created_at).toLocaleString()}</span>
       </div>
 
       {/* Contenido del subhilo */}

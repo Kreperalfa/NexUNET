@@ -533,3 +533,204 @@
 .botonAccionActivo {
   color: #e63946; /* rojo cuando ya dio like */
 }
+/* Botón Seguir */
+.botonSeguir {
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.botonSeguir:hover {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-1px);
+}
+
+/* Botón Siguiendo */
+.botonSiguiendo {
+  background-color: var(--color-tarjeta);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.botonSiguiendo:hover {
+  background-color: var(--color-fondo);
+  border-color: var(--color-texto-suave);
+  transform: translateY(-1px);
+}
+/* ================================
+   SECCIÓN DE COMENTARIOS
+================================ */
+
+/* Contenedor general */
+.comentariosSection {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-borde);
+}
+
+/* Título */
+.comentariosSection h4 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+/* Formulario */
+.comentarioForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.comentarioInput {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.comentarioInput:focus {
+  border-color: var(--color-primario);
+  outline: none;
+}
+
+.comentarioBtn {
+  padding: 10px 16px;
+  background: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.comentarioBtn:hover {
+  background: var(--color-primario-hover);
+  transform: translateY(-1px);
+}
+
+/* Lista */
+.comentarioList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Item */
+.comentarioItem {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.comentarioItem:hover {
+  background: var(--color-fondo);
+  transform: translateY(-1px);
+}
+
+/* Foto */
+.comentarioAutorFoto {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Nombre */
+.comentarioAutor {
+  font-weight: 600;
+  color: var(--color-primario);
+  cursor: pointer;
+}
+
+.comentarioAutor:hover {
+  text-decoration: underline;
+}
+
+/* Contenido */
+.comentarioContenido {
+  margin-top: 4px;
+  color: var(--color-texto);
+  line-height: 1.4;
+}
+
+/* Fecha */
+.comentarioFecha {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+}
+
+/* Estado vacío */
+.comentarioEmpty {
+  color: var(--color-texto-suave);
+  font-style: italic;
+}
+/* ================================
+   CONTENIDO DE LA PUBLICACIÓN
+================================ */
+
+.publicacionContenido {
+  margin-top: 14px;
+  color: var(--color-texto);
+  line-height: 1.65;
+  font-size: 1rem;
+  white-space: pre-line;
+  padding: 6px 2px;
+}
+
+/* Cuando está expandido */
+.publicacionContenidoExpandida {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-top: 16px;
+}
+/* ================================
+   HASHTAGS
+================================ */
+
+.publicacionHashtags {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Chip de hashtag */
+.hashtagChip {
+  padding: 6px 14px;
+  background: var(--color-acento);
+  color: white;
+  border-radius: 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.hashtagChip:hover {
+  background: var(--color-primario);
+  transform: translateY(-2px);
+}

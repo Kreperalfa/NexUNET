@@ -1,15 +1,32 @@
+/* ============================
+   GRID PRINCIPAL DEL DASHBOARD
+============================ */
 .grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 20px;
+  grid-template-columns: 3fr 1fr; /* ← feed mucho más amplio */
+  gap: 28px;
+  width: 100%;
+  max-width: 1400px; /* ← aprovecha toda la pantalla */
+  margin: 0 auto;
+  padding: 0 20px; /* ← evita que se pegue a los bordes */
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 2fr 1fr; /* laptops */
+  }
 }
 
 @media (max-width: 720px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* móvil */
+    padding: 0 14px;
   }
 }
 
+/* ============================
+   TITULOS DE SECCIÓN
+============================ */
 .tituloSeccion {
   margin: 0 0 12px;
   font-size: 15px;
@@ -17,6 +34,9 @@
   color: var(--color-texto);
 }
 
+/* ============================
+   NOTICIAS / NOTIFICACIONES
+============================ */
 .listaNoticias,
 .listaNotificaciones {
   display: flex;
@@ -125,3 +145,41 @@
   color: var(--color-texto-suave);
 }
 
+/* ============================
+   ACCESOS RÁPIDOS
+============================ */
+.quickAccessGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.quickItem {
+  background: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-texto);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.quickItem:hover {
+  background: var(--color-fondo);
+  transform: translateY(-2px);
+}
+
+.quickItem svg {
+  stroke: var(--color-texto-suave);
+}
+
+/* ============================
+   FEED (ahora sí usa todo el ancho)
+============================ */
+.feedSection {
+  width: 100%;
+  display: block; /* ← elimina el centrado forzado */
+}

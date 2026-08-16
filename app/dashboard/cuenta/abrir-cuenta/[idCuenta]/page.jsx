@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 import PageTitle from "@/components/ui/PageTitle";
@@ -14,34 +14,318 @@ import Loader from "@/components/ui/Loader";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import EmptyState from "@/components/info/EmptyState";
 
+import { obtenerCuentaCompleta } from "@/lib/cuenta";
 import {
-  obtenerCuentaCompleta,
   obtenerPublicacionesConMultimedia,
   obtenerHashtagsPublicacion
 } from "@/lib/publicacion";
 
+import {
+  darLike,
+  quitarLike,
+  tieneLike,
+  contarLikes
+} from "@/lib/reacciones";
+
+import {
+  crearComentario,
+  obtenerComentariosPublicacion,
+  contarComentarios
+} from "@/lib/comentario";
+
 import styles from "./page.module.css";
 
+/* ============================================================
+   COMPONENTE HIJO — Publicación estilo Instagram mejorado
+============================================================ */
+function PublicacionIG({
+  publicacion,
+  autor,
+  cacheBust,
+  user,
+  onToggleExpand,
+  hashtags
+}) {
+  const router = useRouter();
+  const expandida = publicacion.expandida || false;
+
+  const portada =
+    publicacion.multimedia?.find((m) => m.tipoArchivo === "imagen")?.url ||
+    null;
+
+  const imagenesAdicionales =
+    publicacion.multimedia?.filter(
+      (m) => m.tipoArchivo === "imagen" && m.url !== portada
+    ) || [];
+
+  const videosLocales =
+    publicacion.multimedia?.filter((m) => m.tipoArchivo === "video") || [];
+
+  const carruselMixto = [...imagenesAdicionales, ...videosLocales];
+
+  const resumen =
+    publicacion.contenido.length > 220
+      ? publicacion.contenido.slice(0, 220) + "..."
+      : publicacion.contenido;
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const cargarLikes = async () => {
+      const yaTiene = await tieneLike(
+        user.id,
+        publicacion.idPublicacion,
+        "PUBLICACION"
+      );
+      setLiked(yaTiene);
+
+      const total = await contarLikes(publicacion.idPublicacion, "PUBLICACION");
+      setLikeCount(total);
+    };
+
+    cargarLikes();
+  }, [publicacion.idPublicacion, user?.id]);
+
+  const toggleLike = async () => {
+    if (!user?.id) return;
+
+    try {
+      if (liked) {
+        await quitarLike(user.id, publicacion.idPublicacion, "PUBLICACION");
+        setLiked(false);
+        setLikeCount((prev) => Math.max(prev - 1, 0));
+      } else {
+        await darLike(user.id, publicacion.idPublicacion, "PUBLICACION");
+        setLiked(true);
+        setLikeCount((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error("Error toggling like:", err);
+    }
+  };
+
+  const [comentarios, setComentarios] = useState([]);
+  const [nuevoComentario, setNuevoComentario] = useState("");
+  const [comentariosCount, setComentariosCount] = useState(0);
+
+  useEffect(() => {
+    if (!expandida) return;
+
+    const cargarComentarios = async () => {
+      const data = await obtenerComentariosPublicacion(
+        publicacion.idPublicacion
+      );
+      setComentarios(data);
+
+      const total = await contarComentarios(publicacion.idPublicacion);
+      setComentariosCount(total);
+    };
+
+    cargarComentarios();
+  }, [expandida, publicacion.idPublicacion]);
+
+  const enviarComentario = async () => {
+    if (!user?.id || !nuevoComentario.trim()) return;
+
+    try {
+      await crearComentario(
+        user.id,
+        publicacion.idPublicacion,
+        nuevoComentario
+      );
+      setNuevoComentario("");
+
+      const data = await obtenerComentariosPublicacion(
+        publicacion.idPublicacion
+      );
+      setComentarios(data);
+
+      const total = await contarComentarios(publicacion.idPublicacion);
+      setComentariosCount(total);
+    } catch (err) {
+      console.error("Error creando comentario:", err);
+    }
+  };
+
+  return (
+    <article className={styles.publicacionCard}>
+      <div className={styles.publicacionAutor}>
+        <img
+          src={
+            autor?.imagenPerfil
+              ? `${autor.imagenPerfil}?t=${cacheBust}`
+              : "/default-user.png"
+          }
+          className={styles.publicacionAutorFoto}
+        />
+        <div>
+          <p className={styles.publicacionAutorNombre}>
+            {autor?.nombre || "Autor desconocido"}
+          </p>
+          <time className={styles.publicacionFecha}>
+            {new Date(publicacion.fechaCreacion).toLocaleString()}
+          </time>
+        </div>
+      </div>
+
+      <div
+        className={
+          expandida
+            ? styles.portadaContainerExpandida
+            : styles.portadaContainer
+        }
+      >
+        {portada ? (
+          <img
+            src={portada}
+            className={
+              expandida
+                ? styles.portadaImagenExpandida
+                : styles.portadaImagen
+            }
+          />
+        ) : publicacion.youtubeURL ? (
+          <YouTubeThumbnail
+            url={publicacion.youtubeURL}
+            className={
+              expandida
+                ? styles.portadaImagenExpandida
+                : styles.portadaImagen
+            }
+          />
+        ) : (
+          <div className={styles.portadaSinImagen}>Sin imagen</div>
+        )}
+      </div>
+
+      {publicacion.titulo && (
+        <h3 className={styles.publicacionTitulo}>{publicacion.titulo}</h3>
+      )}
+
+      <p className={styles.publicacionContenido}>
+        {expandida ? publicacion.contenido : resumen}
+      </p>
+
+      {expandida && carruselMixto.length > 0 && (
+        <MediaCarousel items={carruselMixto} />
+      )}
+
+      {expandida && publicacion.youtubeURL && (
+        <YouTubePlayer url={publicacion.youtubeURL} />
+      )}
+
+      {hashtags?.length > 0 && (
+        <div className={styles.publicacionHashtags}>
+          {hashtags.map((h) => (
+            <span key={h.idHashtag}>
+              <HashtagChip nombre={h.nombre} />
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className={styles.publicacionAccionesIG}>
+        <button
+          className={`${styles.likeButtonIG} ${
+            liked ? styles.likeButtonIGActivo : ""
+          }`}
+          onClick={toggleLike}
+        >
+          {liked ? "❤️" : "🤍"}
+        </button>
+
+        <span className={styles.likeCountIG}>{likeCount} likes</span>
+
+        <button
+          className={styles.comentariosButtonIG}
+          onClick={() => onToggleExpand(publicacion.idPublicacion)}
+        >
+          💬 {comentariosCount}
+        </button>
+      </div>
+
+      <button
+        className={styles.botonExpandir}
+        onClick={() => onToggleExpand(publicacion.idPublicacion)}
+      >
+        {expandida ? "Ver menos" : "Ver más"}
+      </button>
+
+      {expandida && (
+        <div className={styles.comentariosSectionIG}>
+          <h4 className={styles.comentariosTituloIG}>Comentarios</h4>
+
+          <div className={styles.comentarioFormIG}>
+            <input
+              type="text"
+              placeholder="Añadir un comentario..."
+              value={nuevoComentario}
+              onChange={(e) => setNuevoComentario(e.target.value)}
+              className={styles.comentarioInputIG}
+            />
+            <button
+              onClick={enviarComentario}
+              className={styles.comentarioBtnIG}
+            >
+              Publicar
+            </button>
+          </div>
+
+          {comentarios.length === 0 ? (
+            <p className={styles.comentarioEmptyIG}>No hay comentarios aún.</p>
+          ) : (
+            <ul className={styles.comentarioListIG}>
+              {comentarios.map((c) => (
+                <li key={c.idComentario} className={styles.comentarioItemIG}>
+                  <img
+                    src={c.Usuario?.imagenPerfil || "/default-user.png"}
+                    className={styles.comentarioAutorFotoIG}
+                  />
+                  <div>
+                    <p className={styles.comentarioAutorIG}>
+                      {c.Usuario?.nombre || "Usuario desconocido"}
+                    </p>
+                    <p className={styles.comentarioContenidoIG}>
+                      {c.contenido}
+                    </p>
+                    <small className={styles.comentarioFechaIG}>
+                      {new Date(c.created_at).toLocaleString()}
+                    </small>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}
+
+/* ============================================================
+   COMPONENTE PRINCIPAL — Perfil Público IG mejorado
+============================================================ */
 export default function PerfilCuenta() {
   const params = useParams();
   const idCuenta = params.idCuenta;
+  const router = useRouter();
 
   const [cuenta, setCuenta] = useState(null);
+  const [miembros, setMiembros] = useState([]);
   const [publicaciones, setPublicaciones] = useState([]);
   const [hashtagsPorPublicacion, setHashtagsPorPublicacion] = useState({});
   const [user, setUser] = useState(null);
   const [cacheBust, setCacheBust] = useState(Date.now());
   const [cargando, setCargando] = useState(true);
 
-  // Seguidores
   const [seguidores, setSeguidores] = useState([]);
   const [siguiendo, setSiguiendo] = useState(false);
   const [procesandoFollow, setProcesandoFollow] = useState(false);
   const [mostrarModalSeguidores, setMostrarModalSeguidores] = useState(false);
 
-  /* ============================
-     CARGAR USUARIO
-     ============================ */
   useEffect(() => {
     const cargarUsuario = async () => {
       const supabase = getSupabaseBrowserClient();
@@ -51,27 +335,31 @@ export default function PerfilCuenta() {
     cargarUsuario();
   }, []);
 
-  /* ============================
-     CARGAR CUENTA
-     ============================ */
   useEffect(() => {
     const cargarCuenta = async () => {
       try {
         const respuesta = await obtenerCuentaCompleta(idCuenta);
+
         if (!respuesta.ok) return;
+
+        const miembrosConDecision = respuesta.miembros.map((m) => ({
+          ...m,
+          decision: null
+        }));
+
         setCuenta(respuesta.cuenta);
+        setMiembros(miembrosConDecision);
+        setCacheBust(Date.now());
       } catch (error) {
         console.error(error);
       } finally {
         setCargando(false);
       }
     };
+
     if (idCuenta) cargarCuenta();
   }, [idCuenta]);
 
-  /* ============================
-     CARGAR PUBLICACIONES
-     ============================ */
   useEffect(() => {
     const cargarPublicaciones = async () => {
       try {
@@ -84,9 +372,6 @@ export default function PerfilCuenta() {
     if (idCuenta) cargarPublicaciones();
   }, [idCuenta]);
 
-  /* ============================
-     CARGAR HASHTAGS
-     ============================ */
   useEffect(() => {
     const cargarHashtags = async () => {
       const resultado = {};
@@ -99,9 +384,6 @@ export default function PerfilCuenta() {
     if (publicaciones.length > 0) cargarHashtags();
   }, [publicaciones]);
 
-  /* ============================
-     CARGAR SEGUIDORES
-     ============================ */
   useEffect(() => {
     const cargarSeguidores = async () => {
       const supabase = getSupabaseBrowserClient();
@@ -114,9 +396,8 @@ export default function PerfilCuenta() {
           Usuario (
             id,
             nombre,
-            apellido,
-            fotoPerfil,
-            correo
+            imagenPerfil,
+            correoInstitucional
           )
         `)
         .eq("idCuenta", idCuenta)
@@ -128,9 +409,6 @@ export default function PerfilCuenta() {
     if (idCuenta) cargarSeguidores();
   }, [idCuenta, cacheBust]);
 
-  /* ============================
-     VERIFICAR SI SIGUE
-     ============================ */
   useEffect(() => {
     const verificarFollow = async () => {
       if (!user) return;
@@ -150,9 +428,6 @@ export default function PerfilCuenta() {
     verificarFollow();
   }, [user, idCuenta]);
 
-  /* ============================
-     ACCIÓN SEGUIR / DEJAR DE SEGUIR
-     ============================ */
   const manejarFollow = async () => {
     if (!user) return;
 
@@ -187,24 +462,28 @@ export default function PerfilCuenta() {
     setProcesandoFollow(false);
   };
 
-  /* ============================
-     ESTADOS DE CARGA
-     ============================ */
+  const toggleExpansionPublicacion = (idPublicacion) => {
+    setPublicaciones((prev) =>
+      prev.map((pub) =>
+        pub.idPublicacion === idPublicacion
+          ? { ...pub, expandida: !pub.expandida }
+          : pub
+      )
+    );
+  };
+
   if (cargando) return <Loader texto="Cargando cuenta..." />;
   if (!cuenta) return <ErrorMessage mensaje="Cuenta no encontrada" />;
 
-  /* ============================
-     RENDER
-     ============================ */
   return (
     <div className={styles.contenedor}>
-      {/* Fondo */}
       <div
         className={styles.fondo}
-        style={{ backgroundImage: `url(${cuenta.imagenFondoCuenta}?t=${cacheBust})` }}
+        style={{
+          backgroundImage: `url(${cuenta.imagenFondoCuenta}?t=${cacheBust})`
+        }}
       />
 
-      {/* Foto */}
       <section className={styles.fotoContainer}>
         <img
           src={`${cuenta.imagenCuenta}?t=${cacheBust}`}
@@ -215,9 +494,6 @@ export default function PerfilCuenta() {
 
       <PageTitle>{cuenta.nombre}</PageTitle>
 
-      {/* ============================
-          SEGUIDORES
-         ============================ */}
       <section className={styles.seguidoresContainer}>
         <div className={styles.seguidoresHeader}>
           <p className={styles.seguidoresContador}>
@@ -226,9 +502,7 @@ export default function PerfilCuenta() {
 
           <button
             className={
-              siguiendo
-                ? styles.botonSiguiendo
-                : styles.botonSeguir
+              siguiendo ? styles.botonSiguiendo : styles.botonSeguir
             }
             disabled={procesandoFollow}
             onClick={manejarFollow}
@@ -243,7 +517,23 @@ export default function PerfilCuenta() {
           </button>
         </div>
 
-        {seguidores.length > 5 && (
+        <div className={styles.seguidoresGrid}>
+          {seguidores.slice(0, 9).map((s) => (
+            <div key={s.idSeguido} className={styles.seguidorItem}>
+              <img
+                src={
+                  s.Usuario?.imagenPerfil
+                    ? `${s.Usuario.imagenPerfil}?t=${cacheBust}`
+                    : "/default-user.png"
+                }
+                className={styles.seguidorFoto}
+              />
+              <p className={styles.seguidorNombre}>{s.Usuario?.nombre}</p>
+            </div>
+          ))}
+        </div>
+
+        {seguidores.length > 9 && (
           <button
             className={styles.botonVerTodos}
             onClick={() => setMostrarModalSeguidores(true)}
@@ -253,7 +543,6 @@ export default function PerfilCuenta() {
         )}
       </section>
 
-      {/* MODAL */}
       {mostrarModalSeguidores && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -264,18 +553,18 @@ export default function PerfilCuenta() {
                 <div key={s.idSeguido} className={styles.modalItem}>
                   <img
                     src={
-                      s.Usuario?.fotoPerfil
-                        ? `${s.Usuario.fotoPerfil}?t=${cacheBust}`
+                      s.Usuario?.imagenPerfil
+                        ? `${s.Usuario.imagenPerfil}?t=${cacheBust}`
                         : "/default-user.png"
                     }
                     className={styles.modalFoto}
                   />
 
                   <div>
-                    <p className={styles.modalNombre}>
-                      {s.Usuario?.nombre} {s.Usuario?.apellido}
+                    <p className={styles.modalNombre}>{s.Usuario?.nombre}</p>
+                    <p className={styles.modalCorreo}>
+                      {s.Usuario?.correoInstitucional}
                     </p>
-                    <p className={styles.modalCorreo}>{s.Usuario?.correo}</p>
                     <time className={styles.modalFecha}>
                       Desde {new Date(s.created_at).toLocaleDateString()}
                     </time>
@@ -294,16 +583,8 @@ export default function PerfilCuenta() {
         </div>
       )}
 
-      {/* Detalles */}
-      <SectionCard titulo="Detalles de la cuenta">
-        <p className={styles.descripcion}>
-          {cuenta.descripcion || "Sin descripción."}
-        </p>
-      </SectionCard>
-
-      {/* Miembros */}
-      <SectionCard titulo="Miembros">
-        {cuenta.miembros?.length === 0 ? (
+      <SectionCard titulo="Miembros de la cuenta">
+        {miembros.length === 0 ? (
           <EmptyState
             titulo="Sin miembros"
             descripcion="No hay miembros registrados en esta cuenta."
@@ -311,7 +592,7 @@ export default function PerfilCuenta() {
           />
         ) : (
           <ul className={styles.adminGrid}>
-            {cuenta.miembros.map((m) => (
+            {miembros.map((m) => (
               <li key={m.idUsuario} className={styles.adminItem}>
                 <img
                   src={
@@ -334,7 +615,12 @@ export default function PerfilCuenta() {
         )}
       </SectionCard>
 
-      {/* Publicaciones */}
+      <SectionCard titulo="Detalles de la cuenta">
+        <p className={styles.descripcion}>
+          {cuenta.descripcion || "Sin descripción."}
+        </p>
+      </SectionCard>
+
       <SectionCard titulo="Noticias / Artículos publicados">
         {publicaciones.length === 0 ? (
           <EmptyState
@@ -344,123 +630,21 @@ export default function PerfilCuenta() {
           />
         ) : (
           <div className={styles.publicacionesLista}>
-            {publicaciones.map((p) => {
-              const expandida = p.expandida || false;
-
-              const resumen =
-                p.contenido.length > 220
-                  ? p.contenido.slice(0, 220) + "..."
-                  : p.contenido;
-
-              const portada =
-                p.multimedia?.find((m) => m.tipoArchivo === "imagen")?.url ||
-                null;
-
-              return (
-                <article key={p.idPublicacion} className={styles.publicacionCard}>
-                  {/* Autor */}
-                  <div className={styles.publicacionAutor}>
-                    <img
-                      src={
-                        p.autor?.imagenPerfil
-                          ? `${p.autor.imagenPerfil}?t=${cacheBust}`
-                          : "/default-user.png"
-                      }
-                      className={styles.publicacionAutorFoto}
-                    />
-                    <div>
-                      <p className={styles.publicacionAutorNombre}>
-                        {p.autor?.nombre || "Autor desconocido"}
-                      </p>
-                      <time className={styles.publicacionFecha}>
-                        {new Date(p.fechaCreacion).toLocaleString()}
-                      </time>
-                    </div>
-                  </div>
-
-                  {/* Portada */}
-                  <div
-                    className={
-                      expandida
-                        ? styles.portadaContainerExpandida
-                        : styles.portadaContainer
-                    }
-                  >
-                    {portada ? (
-                      <img
-                        src={portada}
-                        className={
-                          expandida
-                            ? styles.portadaImagenExpandida
-                            : styles.portadaImagen
-                        }
-                      />
-                    ) : p.youtubeURL ? (
-                      <YouTubeThumbnail
-                        url={p.youtubeURL}
-                        className={
-                          expandida
-                            ? styles.portadaImagenExpandida
-                            : styles.portadaImagen
-                        }
-                      />
-                    ) : (
-                      <div className={styles.portadaSinImagen}>Sin imagen</div>
-                    )}
-                  </div>
-
-                  {/* Título */}
-                  {p.titulo && (
-                    <h3 className={styles.publicacionTitulo}>{p.titulo}</h3>
-                  )}
-
-                  {/* Contenido */}
-                  <p className={styles.publicacionContenido}>
-                    {expandida ? p.contenido : resumen}
-                  </p>
-
-                  {/* Carrusel */}
-                  {expandida && p.multimedia?.length > 0 && (
-                    <MediaCarousel items={p.multimedia} />
-                  )}
-
-                  {/* YouTube */}
-                  {expandida && p.youtubeURL && (
-                    <YouTubePlayer url={p.youtubeURL} />
-                  )}
-
-                  {/* Hashtags */}
-                  {hashtagsPorPublicacion[p.idPublicacion]?.length > 0 && (
-                    <div className={styles.publicacionHashtags}>
-                      {hashtagsPorPublicacion[p.idPublicacion].map((h) => (
-                        <span key={h.idHashtag}>
-                          <HashtagChip nombre={h.nombre} />
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Expandir */}
-                  <button
-                    className={styles.botonExpandir}
-                    onClick={() =>
-                      setPublicaciones((prev) =>
-                        prev.map((pub) =>
-                          pub.idPublicacion === p.idPublicacion
-                            ? { ...pub, expandida: !pub.expandida }
-                            : pub
-                        )
-                      )
-                    }
-                  >
-                    {expandida ? "Ver menos" : "Ver más"}
-                  </button>
-                </article>
-              );
-            })}
+            {publicaciones.map((p) => (
+              <PublicacionIG
+                key={p.idPublicacion}
+                publicacion={p}
+                autor={p.autor}
+                cacheBust={cacheBust}
+                user={user}
+                onToggleExpand={toggleExpansionPublicacion}
+                hashtags={hashtagsPorPublicacion[p.idPublicacion] || []}
+              />
+            ))}
           </div>
         )}
       </SectionCard>
     </div>
   );
 }
+

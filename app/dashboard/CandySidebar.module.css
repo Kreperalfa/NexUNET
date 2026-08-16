@@ -1,0 +1,77 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -420px; /* Oculto */
+  width: 420px;
+  height: 100vh;
+
+  background: var(--color-tarjeta);
+  border-left: 2px solid var(--color-borde);
+
+  box-shadow: -4px 0 18px rgba(0,0,0,0.15);
+
+  transition: right 0.3s ease;
+  z-index: 9998;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.abierto {
+  right: 0; /* Se muestra */
+}
+
+/* ⭐ Encabezado del chat */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem;
+  background: var(--color-primario);
+  color: white;
+  border-bottom: 2px solid var(--color-borde);
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.15s ease;
+}
+
+.closeBtn:hover {
+  transform: scale(1.2);
+}
+
+/* ⭐ Contenido del chat */
+.chatContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--color-fondo);
+}
+/* ============================
+   AVATAR DE CANDY EN EL HEADER
+============================ */
+.candyAvatarWrapper {
+  width: 48px;
+  height: 48px;
+  position: relative;
+
+  border-radius: 50%;
+  overflow: hidden; /* ⭐ Recorta la imagen */
+  margin-right: 12px;
+}
+
+.candyAvatar {
+  object-fit: cover;
+  border-radius: 50%;
+}
