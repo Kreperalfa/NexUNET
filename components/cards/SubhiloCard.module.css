@@ -1,6 +1,6 @@
 /* ============================
    TARJETA BASE
-   ============================ */
+============================ */
 .subCard {
   position: relative;
   padding: 1rem 1.2rem;
@@ -33,9 +33,42 @@
 }
 
 /* ============================
+   AUTOR DEL SUBHILO
+============================ */
+.subAutorBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.subAutorFoto {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-borde);
+}
+
+.subAutorNombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primario-oscuro);
+}
+
+.subFecha {
+  font-size: 0.75rem;
+  color: #777;
+}
+
+/* ============================
    TEXTO
-   ============================ */
+============================ */
 .subMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   font-size: 0.85rem;
   color: var(--color-primario-oscuro);
   margin-bottom: 0.5rem;
@@ -50,7 +83,7 @@
 
 /* ============================
    ARCHIVOS ADJUNTOS
-   ============================ */
+============================ */
 .subArchivos {
   margin-top: 0.8rem;
 }
@@ -70,7 +103,7 @@
 
 /* ============================
    LINKS EXTERNOS
-   ============================ */
+============================ */
 .subLinks {
   margin-top: 0.8rem;
 }
@@ -90,8 +123,48 @@
 }
 
 /* ============================
+   BOTÓN LIKE — NUEVO
+============================ */
+.likeBtn {
+  margin-top: 0.8rem;
+  padding: 6px 12px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background: var(--color-tarjeta);
+  color: var(--color-texto);
+
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.likeBtn:hover {
+  background: var(--color-fondo);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.likeIcon {
+  font-size: 1.2rem;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.likeIconLiked {
+  color: #ff3040;
+  transform: scale(1.25);
+}
+
+/* ============================
    BOTÓN RESPONDER
-   ============================ */
+============================ */
 .subResponderBtn {
   margin-top: 1rem;
   padding: 8px 14px;
@@ -113,7 +186,7 @@
 
 /* ============================
    BOTÓN MOSTRAR/OCULTAR RESPUESTAS
-   ============================ */
+============================ */
 .toggleBtn {
   margin-top: 1.2rem;
   padding: 6px 12px;
@@ -152,7 +225,7 @@
 
 /* ============================
    RESPONSIVE — MÓVIL
-   ============================ */
+============================ */
 @media (max-width: 600px) {
   .toggleBtn {
     width: 100%;
@@ -163,10 +236,3 @@
     padding: 0.9rem;
   }
 }
-
-
-
-
-
-
-

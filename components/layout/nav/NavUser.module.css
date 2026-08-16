@@ -17,6 +17,17 @@
   font-size: 14px;
   color: #fff;
 }
+.info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.rol {
+  font-size: 0.8rem;
+  color: #fff;
+  opacity: 0.8;
+}
 
 /* ===========================
    MÓVIL Y TABLET — SOLO FOTO

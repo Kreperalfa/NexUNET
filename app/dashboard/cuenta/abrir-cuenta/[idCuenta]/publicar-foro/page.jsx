@@ -1,12 +1,16 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import { getSupabaseBrowserClient } from "../../../../../../lib/supabase";
-import { crearHilo } from "../../../../../../lib/hilo";
 
-export default function PublicarEnForo() {
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { crearHilo } from "@/lib/hilo";
+
+import styles from "./page.module.css";
+
+export default function Page() {
   const supabase = getSupabaseBrowserClient();
   const params = useParams();
+  const router = useRouter();
   const idCuenta = params.idCuenta;
 
   const [materias, setMaterias] = useState([]);
@@ -14,11 +18,11 @@ export default function PublicarEnForo() {
   const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const [archivos, setArchivos] = useState([]);       // 👈 nuevos archivos
-  const [linksExternos, setLinksExternos] = useState([]); // 👈 nuevos links
-  const [nuevoLink, setNuevoLink] = useState("");     // input temporal para links
+  const [archivos, setArchivos] = useState([]);
+  const [linksExternos, setLinksExternos] = useState([]);
+  const [nuevoLink, setNuevoLink] = useState("");
+  const [publicando, setPublicando] = useState(false); // 👈 bloqueo anti-spam
 
-  // Cargar materias vinculadas al departamento de la cuenta
   const cargarMaterias = async () => {
     const { data: departamento } = await supabase
       .from("Departamento")
@@ -43,13 +47,17 @@ export default function PublicarEnForo() {
     cargarMaterias();
   }, [idCuenta]);
 
-  // Crear hilo en foro oficial de la materia seleccionada
   const manejarSubmit = async (e) => {
     e.preventDefault();
+
+    if (publicando) return; // 👈 evita spam
+
     if (!materiaSeleccionada) {
       setMensaje("Debes seleccionar una materia.");
       return;
     }
+
+    setPublicando(true); // 👈 bloquea el botón
 
     const { data: foros } = await supabase
       .from("Foro")
@@ -60,6 +68,7 @@ export default function PublicarEnForo() {
 
     if (!foros) {
       setMensaje("No se encontró el foro oficial de la materia.");
+      setPublicando(false);
       return;
     }
 
@@ -74,7 +83,9 @@ export default function PublicarEnForo() {
       idUsuarioCreador: userData?.user?.id,
       idCuentaCreador: idCuenta,
       idForoFuente: idForoOficial,
-      nombreMateria: materias.find((m) => m.idMateria === materiaSeleccionada)?.nombreMateria,
+      nombreMateria:
+        materias.find((m) => m.idMateria === materiaSeleccionada)
+          ?.nombreMateria,
       tipoForo,
       archivos,
       linksExternos,
@@ -90,85 +101,96 @@ export default function PublicarEnForo() {
       setLinksExternos([]);
       setNuevoLink("");
     }
+
+    setPublicando(false); // 👈 desbloquea después
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "28px", marginBottom: "10px" }}>Foro Oficial</h1>
-      <p style={{ fontSize: "18px", color: "#555" }}>
+    <main className={styles.contenedor}>
+      <h1 className={styles.tituloPrincipal}>Foro Oficial</h1>
+      <p className={styles.descripcion}>
         Aquí podrás publicar contenido en el foro oficial de tu departamento.
       </p>
 
-      {/* Selección de materia */}
-      <h3 style={{ marginTop: "20px" }}>Seleccionar materia:</h3>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+      <h3 className={styles.subtitulo}>Seleccionar materia</h3>
+
+      <div className={styles.listaMaterias}>
         {materias.map((m) => (
           <button
-            type="button"
             key={m.idMateria}
+            type="button"
+            className={
+              materiaSeleccionada === m.idMateria
+                ? styles.materiaActiva
+                : styles.materiaBoton
+            }
             onClick={() => setMateriaSeleccionada(m.idMateria)}
-            style={{
-              padding: "0.5rem 1rem",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-              backgroundColor:
-                materiaSeleccionada === m.idMateria ? "#4caf50" : "#f0f0f0",
-              color: materiaSeleccionada === m.idMateria ? "#fff" : "#000",
-            }}
           >
             {m.nombreMateria}
           </button>
         ))}
       </div>
 
-      {/* Formulario de publicación */}
-      <div
-        style={{
-          marginTop: "30px",
-          padding: "20px",
-          background: "#f5f5f5",
-          borderRadius: "10px",
-          border: "1px solid #ddd",
-        }}
-      >
-        <h2 style={{ marginBottom: "10px" }}>Publicar en Foro Oficial</h2>
-        <form onSubmit={manejarSubmit}>
+      <div className={styles.card}>
+        <h2 className={styles.tituloCard}>Publicar en Foro Oficial</h2>
+
+        {mensaje && <p className={styles.mensaje}>{mensaje}</p>}
+
+        <form onSubmit={manejarSubmit} className={styles.formulario}>
           <input
             type="text"
             placeholder="Título del hilo"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
             required
-            style={{ display: "block", marginBottom: "10px", width: "100%" }}
+            className={styles.input}
           />
+
           <textarea
             placeholder="Contenido del hilo"
             value={contenido}
             onChange={(e) => setContenido(e.target.value)}
             required
             rows={5}
-            style={{ display: "block", marginBottom: "10px", width: "100%" }}
+            className={styles.textarea}
           />
 
-          {/* Input de archivos */}
-          <input
-            type="file"
-            multiple
-            onChange={(e) => setArchivos(Array.from(e.target.files))}
-            style={{ display: "block", marginBottom: "10px", width: "100%" }}
-          />
+          <label className={styles.label}>Archivos adjuntos</label>
 
-          {/* Input de links externos */}
-          <div style={{ marginBottom: "10px" }}>
+          <div className={styles.fileDrop}>
+            <input
+              type="file"
+              multiple
+              className={styles.fileInput}
+              onChange={(e) => setArchivos(Array.from(e.target.files))}
+            />
+            <p className={styles.fileText}>Haz clic o arrastra archivos aquí</p>
+          </div>
+
+          {archivos.length > 0 && (
+            <ul className={styles.fileList}>
+              {archivos.map((file, idx) => (
+                <li key={idx} className={styles.fileItem}>
+                  {file.name}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <label className={styles.label}>Agregar link externo</label>
+
+          <div className={styles.agregarLink}>
             <input
               type="text"
-              placeholder="Agregar link externo"
+              placeholder="https://ejemplo.com"
               value={nuevoLink}
               onChange={(e) => setNuevoLink(e.target.value)}
-              style={{ width: "80%", marginRight: "10px" }}
+              className={styles.input}
             />
+
             <button
               type="button"
+              className={styles.botonPrimario}
               onClick={() => {
                 if (nuevoLink.trim()) {
                   setLinksExternos([...linksExternos, nuevoLink.trim()]);
@@ -180,19 +202,38 @@ export default function PublicarEnForo() {
             </button>
           </div>
 
-          {/* Mostrar links agregados */}
           {linksExternos.length > 0 && (
-            <ul>
+            <ul className={styles.listaLinks}>
               {linksExternos.map((link, idx) => (
                 <li key={idx}>{link}</li>
               ))}
             </ul>
           )}
 
-          <button type="submit">Publicar Hilo</button>
+          <div className={styles.botonesFinales}>
+            <button
+              type="button"
+              className={styles.botonCancelar}
+              onClick={() => router.back()}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              disabled={publicando}
+              className={
+                publicando
+                  ? styles.botonDeshabilitado
+                  : styles.botonPrimario
+              }
+            >
+              {publicando ? "Publicando..." : "Publicar Hilo"}
+            </button>
+          </div>
         </form>
-        {mensaje && <p style={{ marginTop: "10px" }}>{mensaje}</p>}
       </div>
-    </div>
+    </main>
   );
 }
+

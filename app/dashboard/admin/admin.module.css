@@ -1,0 +1,217 @@
+/* ============================================================
+   ⭐ PANEL GENERAL
+   ============================================================ */
+
+.panel {
+  padding: 2rem;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-texto);
+}
+
+.subtitulo {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+  color: var(--color-texto-suave);
+}
+
+.cargando {
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.denegado {
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #d9534f;
+}
+
+/* ============================================================
+   ⭐ GRID DE OPCIONES DEL PANEL
+   ============================================================ */
+
+.grid {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ⭐ BOTONES DEL PANEL — AHORA CON MÁS COLOR */
+.card {
+  background: var(--color-tarjeta);
+  padding: 1.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid var(--color-borde);
+
+  /* ⭐ Color suave inicial */
+  background: linear-gradient(
+    180deg,
+    var(--color-tarjeta),
+    var(--color-fondo)
+  );
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+
+  /* ⭐ Color profesional al hacer hover */
+  background: linear-gradient(
+    180deg,
+    var(--color-primario),
+    var(--color-acento)
+  );
+  border-color: var(--color-primario);
+}
+
+.card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: var(--color-texto);
+}
+
+.card:hover h3 {
+  color: white;
+}
+
+.card p {
+  color: var(--color-texto-suave);
+}
+
+.card:hover p {
+  color: white;
+}
+
+/* ============================================================
+   ⭐ GRÁFICAS PROFESIONALES
+   ============================================================ */
+
+.grafica {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--color-tarjeta);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid var(--color-borde);
+}
+
+.graficaTitulo {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-texto);
+}
+
+/* ⭐ Contenedor de barras */
+.barras {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+/* ⭐ Cada barra */
+.barraItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ============================================================
+   ⭐ BARRAS ANIMADAS — USANDO TU PALETA
+   ============================================================ */
+
+/* Usuarios activos */
+.barraActivos {
+  width: 55px;
+  background: linear-gradient(
+    180deg,
+    var(--color-primario),
+    var(--color-primario-hover)
+  );
+  border-radius: 8px;
+  transition: height 0.6s ease;
+  border: 1px solid var(--color-borde);
+}
+
+/* Usuarios inactivos */
+.barraInactivos {
+  width: 55px;
+  background: linear-gradient(
+    180deg,
+    #ffb74d,
+    #ef6c00
+  );
+  border-radius: 8px;
+  transition: height 0.6s ease;
+  border: 1px solid var(--color-borde);
+}
+
+/* Cuentas */
+.barraCuentas {
+  width: 55px;
+  background: linear-gradient(
+    180deg,
+    var(--color-acento),
+    var(--color-primario)
+  );
+  border-radius: 8px;
+  transition: height 0.6s ease;
+  border: 1px solid var(--color-borde);
+}
+
+/* Etiquetas */
+.barraLabel {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-texto);
+}
+
+/* ============================================================
+   ⭐ RESPONSIVIDAD
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .barras {
+    gap: 1.5rem;
+  }
+
+  .barraActivos,
+  .barraInactivos,
+  .barraCuentas {
+    width: 40px;
+  }
+
+  .barraLabel {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grafica {
+    padding: 1rem;
+  }
+
+  .barras {
+    gap: 1rem;
+  }
+
+  .barraActivos,
+  .barraInactivos,
+  .barraCuentas {
+    width: 32px;
+  }
+}
+

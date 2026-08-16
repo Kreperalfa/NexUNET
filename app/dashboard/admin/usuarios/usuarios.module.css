@@ -1,0 +1,168 @@
+/* ============================================================
+   ⭐ DISEÑO BASE
+   ============================================================ */
+
+.panel {
+  padding: 2rem;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.buscador {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  font-size: 1rem;
+}
+
+.tabla {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ============================================================
+   ⭐ DESKTOP — ORDEN FIJO (COMO EN TU CAPTURA)
+   ============================================================ */
+
+.encabezado,
+.fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.7fr 0.7fr; /* ⭐ Orden fijo */
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--color-tarjeta);
+  border-radius: 10px;
+}
+
+.encabezado {
+  font-weight: bold;
+  background: var(--color-tarjeta-suave);
+}
+
+/* ============================================================
+   ⭐ SELECT Y BOTÓN
+   ============================================================ */
+
+.selectRol {
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-borde);
+  background: var(--color-fondo);
+  width: 100%;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* ⭐ Si no cabe, baja */
+}
+
+.btnBloqueo {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+
+  width: auto;        /* ⭐ No ancho */
+  min-width: 110px;   /* ⭐ Tamaño mínimo profesional */
+}
+
+.cargando {
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+/* ============================================================
+   ⭐ TABLETS — REORDENAMIENTO SUAVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .encabezado,
+  .fila {
+    grid-template-columns: 1fr 1fr 1fr; /* ⭐ 3 columnas */
+  }
+
+  .acciones {
+    grid-column: span 3; /* ⭐ Baja automáticamente */
+  }
+}
+
+/* ============================================================
+   ⭐ MÓVILES GRANDES — FORMATO VERTICAL
+   ============================================================ */
+
+@media (max-width: 700px) {
+  .panel {
+    padding: 1rem;
+  }
+
+  .titulo {
+    font-size: 1.6rem;
+  }
+
+  .encabezado {
+    display: none; /* ⭐ Oculta encabezado */
+  }
+
+  .fila {
+    display: grid;
+
+    /* ⭐ Reordenamiento inteligente SOLO en móvil */
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "nombre"
+      "correo"
+      "rol"
+      "acciones";
+
+    gap: 0.7rem;
+  }
+
+  .fila span:nth-child(1) { grid-area: nombre; }
+  .fila span:nth-child(2) { grid-area: correo; }
+  .selectRol { grid-area: rol; }
+  .acciones { grid-area: acciones; }
+}
+
+/* ============================================================
+   ⭐ MÓVILES PEQUEÑOS — ULTRA COMPACTO
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .fila span {
+    font-size: 0.95rem;
+  }
+
+  .btnBloqueo {
+    min-width: 100px;
+  }
+}
+
+/* ============================================================
+   ⭐ ULTRA PEQUEÑO
+   ============================================================ */
+
+@media (max-width: 360px) {
+  .titulo {
+    font-size: 1.4rem;
+  }
+
+  .fila {
+    padding: 0.8rem;
+  }
+
+  .btnBloqueo {
+    padding: 0.5rem;
+    min-width: 90px;
+  }
+}

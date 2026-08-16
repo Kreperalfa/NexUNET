@@ -19,7 +19,9 @@ export default function HiloDetallePage() {
   const tipoForoURL = searchParams.get("tipoForo");
 
   const [hilo, setHilo] = useState(null);
+  const [autorHilo, setAutorHilo] = useState(null);
   const [subhilos, setSubhilos] = useState([]);
+  const [autoresSub, setAutoresSub] = useState({});
   const [archivos, setArchivos] = useState([]);
   const [cargando, setCargando] = useState(true);
 
@@ -32,6 +34,15 @@ export default function HiloDetallePage() {
       .single();
 
     if (!hiloData) return;
+
+    // Cargar autor del hilo
+    const { data: autor } = await supabase
+      .from("Usuario")
+      .select("nombre, correoInstitucional, imagenPerfil")
+      .eq("id", hiloData.idUsuarioCreador)
+      .single();
+
+    setAutorHilo(autor);
 
     const { data: foroData } = await supabase
       .from("Foro")
@@ -62,7 +73,7 @@ export default function HiloDetallePage() {
     if (data) setArchivos(data);
   };
 
-  // ⭐ Cargar archivos de cada subhilo (CORREGIDO)
+  // ⭐ Cargar archivos de cada subhilo
   const cargarArchivosSubhilo = async (idSubHilo) => {
     const { data } = await supabase
       .from("ArchivoHilo")
@@ -72,6 +83,7 @@ export default function HiloDetallePage() {
     return data || [];
   };
 
+  // ⭐ Cargar subhilos + autores en batch
   const cargarSubHilos = async () => {
     const { data } = await supabase
       .from("SubHilo")
@@ -81,20 +93,36 @@ export default function HiloDetallePage() {
 
     if (!data) return;
 
-    // ⭐ Agregar archivos y links a cada subhilo
-    const subhilosConArchivos = await Promise.all(
+    // Obtener IDs de autores
+    const idsAutores = [...new Set(data.map((s) => s.idUsuarioCreador))];
+
+    // Cargar autores en batch
+    const { data: autores } = await supabase
+      .from("Usuario")
+      .select("id, nombre, correoInstitucional, imagenPerfil")
+      .in("id", idsAutores);
+
+    const mapaAutores = {};
+    autores?.forEach((u) => {
+      mapaAutores[u.id] = u;
+    });
+
+    // Agregar archivos y autor a cada subhilo
+    const subhilosConTodo = await Promise.all(
       data.map(async (s) => {
         const archivosSub = await cargarArchivosSubhilo(s.idSubHilo);
 
         return {
           ...s,
+          autor: mapaAutores[s.idUsuarioCreador] || null,
           archivos: archivosSub.filter((a) => a.tipoArchivo !== "link"),
           links: archivosSub.filter((a) => a.tipoArchivo === "link"),
         };
       })
     );
 
-    setSubhilos(subhilosConArchivos);
+    setAutoresSub(mapaAutores);
+    setSubhilos(subhilosConTodo);
   };
 
   useEffect(() => {
@@ -143,7 +171,9 @@ export default function HiloDetallePage() {
           <h1 className={styles.hiloTitle}>{hilo.titulo}</h1>
 
           <div className={styles.hiloMeta}>
-            <span className={styles.hiloAutor}>Autor: {hilo.idUsuarioCreador}</span>
+            <span className={styles.hiloAutor}>
+              Autor: {autorHilo?.nombre || autorHilo?.correoInstitucional || hilo.idUsuarioCreador}
+            </span>
             <span className={styles.hiloFecha}>
               {new Date(hilo.created_at).toLocaleString()}
             </span>
@@ -199,6 +229,7 @@ export default function HiloDetallePage() {
     </div>
   );
 }
+
 
 
 

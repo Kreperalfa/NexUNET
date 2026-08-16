@@ -1,0 +1,43 @@
+.candyButton {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+
+  width: 64px;
+  height: 64px;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: right 0.3s ease, transform 0.15s ease;
+}
+
+.candyButton:hover {
+  transform: scale(1.12);
+}
+
+/* ⭐ Cuando el sidebar está abierto */
+.mover {
+  right: 444px; /* 420px del sidebar + 24px de margen */
+}
+
+/* ⭐ Imagen circular */
+.candyIconWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.candyIcon {
+  object-fit: cover;
+  border-radius: 50%;
+}

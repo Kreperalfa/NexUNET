@@ -1,19 +1,26 @@
 "use client";
+
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import styles from "./candyChat.module.css";
 
 // 🔹 Importamos el orquestador y el formateador
 import { procesarConsulta } from "../../../lib/candy";
 import { formatearRespuesta } from "../../../lib/candy/formateador";
 
+// 🔹 Importamos la imagen o GIF/video de Candy
+// Si quieres usar el GIF/video animado, cambia esta línea:
+import candyIcon from "@/resources/candy-hablando.jpeg";
+// import candyIconAnimado from "@/resources/candy-animado.mp4";
+
 export default function CandyChatPage() {
   const [messages, setMessages] = useState([
     { 
       sender: "bot", 
-      text: `🐶 ¡Guau guau! Hola humano unetense, soy Candy, tu perrita académica de la UNET 🐾.
-            Escríbeme el nombre de una materia o tema (ejemplo: "Primer parcial de Matemática 4").
-            Yo olfatearé 🐕 entre los hilos y te mostraré los que coincidan.
-            Si no encuentro nada, te lo diré con un ladrido triste 😢. 
+      text: `🐶 ¡Guau guau! Hola humano unetense, soy Candy, tu perrita académica de la UNET 🐾.<br>
+            Escríbeme el nombre de una materia o tema (ejemplo: "Primer parcial de Matemática 4").<br>
+            Yo olfatearé 🐕 entre los hilos y te mostraré los que coincidan.<br>
+            Si no encuentro nada, te lo diré con un ladrido triste 😢.<br>
             ¡Vamos humano, dime qué quieres buscar y Candy irá a husmear por ti!`
     }
   ]);
@@ -34,25 +41,14 @@ export default function CandyChatPage() {
 
     try {
       // 🔹 Procesar consulta con Candy
-      const { resultados, intencion, contexto } = await procesarConsulta(input);
+      const { resultados } = await procesarConsulta(input);
 
-      // 🔹 Formatear resultados para mostrar en el chat
+      // 🔹 Formatear resultados para mostrar en el chat (HTML listo)
       const resultadosTexto = formatearRespuesta(resultados);
 
-      // 🔹 Opcional: mostrar entidad detectada (pero NO banderas)
-      let debugTexto = "";
-/*
-      if (intencion.detalles?.materia?.length) {
-        debugTexto += `📚 Materia detectada: ${intencion.detalles.materia.join(", ")}\n`;
-      }
-      if (intencion.detalles?.entidadFinal) {
-        debugTexto += `🏢 Entidad detectada: ${intencion.detalles.entidadFinal.tipo} → ${intencion.detalles.entidadFinal.nombre}\n`;
-      }
-*/
-      // 🔹 Respuesta del bot
       const botReply = {
         sender: "bot",
-        text: `${resultadosTexto}${debugTexto ? "\n\n" + debugTexto : ""}`
+        text: resultadosTexto
       };
 
       setMessages((prev) => [...prev, botReply]);
@@ -75,12 +71,48 @@ export default function CandyChatPage() {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={msg.sender === "user" ? styles.userMessage : styles.botMessage}
+            className={
+              msg.sender === "user"
+                ? styles.userMessage
+                : styles.botMessage
+            }
           >
-            {/* 🔹 Renderizamos texto con links */}
-            <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, "<br/>") }} />
+            {/* ⭐ Avatar del bot */}
+            {msg.sender === "bot" && (
+              <div className={styles.botAvatarWrapper}>
+
+                {/* ⭐ Si quieres usar el GIF/video animado, reemplaza este bloque: */}
+                {/* 
+                <video
+                  src={candyIconAnimado}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className={styles.botAvatar}
+                />
+                */}
+
+                {/* ⭐ Imagen estática */}
+                <Image
+                  src={candyIcon}
+                  alt="Candy"
+                  fill
+                  sizes="40px"
+                  loading="eager"
+                  className={styles.botAvatar}
+                />
+              </div>
+            )}
+
+            {/* ⭐ Burbuja del mensaje con HTML ya formateado */}
+            <div
+              className={styles.messageBubble}
+              dangerouslySetInnerHTML={{ __html: msg.text }}
+            />
           </div>
         ))}
+
         <div ref={chatEndRef} />
       </div>
 

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 
 import {
   obtenerPublicacionesCompletas,
-  borrarPublicacion
 } from "../../../lib/publicacion";
 
 import {
@@ -17,7 +17,6 @@ import {
 
 import {
   crearComentario,
-  borrarComentario,
   obtenerComentariosPublicacion,
   contarComentarios
 } from "../../../lib/comentario";
@@ -40,11 +39,14 @@ import EmptyState from "@/components/info/EmptyState";
 import MediaCarousel from "@/components/media/MediaCarousel";
 import YouTubePlayer from "@/components/media/YouTubePlayer";
 import YouTubeThumbnail from "@/components/media/YouTubeThumbnail";
+
 /* ============================================================
    COMPONENTE HIJO: PublicacionCard
-   ============================================================ */
+============================================================ */
 function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, idUsuario }) {
   const supabase = getSupabaseBrowserClient();
+  const router = useRouter();
+
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [hashtags, setHashtags] = useState([]);
@@ -57,7 +59,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
   // Estado para seguimiento
   const [isFollowing, setIsFollowing] = useState(false);
 
-  // Likes
+  /* ============================================================
+     CARGAR LIKES
+  ============================================================ */
   useEffect(() => {
     if (!idUsuario) return;
     const cargarLikes = async () => {
@@ -74,7 +78,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     cargarLikes();
   }, [idUsuario, publicacion.idPublicacion]);
 
-  // Hashtags
+  /* ============================================================
+     CARGAR HASHTAGS
+  ============================================================ */
   useEffect(() => {
     const cargarHashtags = async () => {
       try {
@@ -95,7 +101,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     cargarHashtags();
   }, [publicacion.idPublicacion]);
 
-  // Comentarios
+  /* ============================================================
+     CARGAR COMENTARIOS
+  ============================================================ */
   useEffect(() => {
     if (!expandida) return;
 
@@ -114,7 +122,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     cargarComentarios();
   }, [expandida, publicacion.idPublicacion]);
 
-  // Seguimiento
+  /* ============================================================
+     CARGAR SEGUIMIENTO
+  ============================================================ */
   useEffect(() => {
     if (!idUsuario || !publicacion.cuenta?.idCuenta) return;
     const checkFollow = async () => {
@@ -129,13 +139,17 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     checkFollow();
   }, [idUsuario, publicacion.cuenta?.idCuenta]);
 
+  /* ============================================================
+     LIKE — ❤️ / 🤍 y contador correcto
+  ============================================================ */
   const toggleLike = async () => {
     if (!idUsuario) return;
+
     try {
       if (liked) {
         await quitarLike(idUsuario, publicacion.idPublicacion, "PUBLICACION");
         setLiked(false);
-        setLikeCount((prev) => prev - 1);
+        setLikeCount((prev) => Math.max(prev - 1, 0));
       } else {
         await darLike(idUsuario, publicacion.idPublicacion, "PUBLICACION");
         setLiked(true);
@@ -146,8 +160,12 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     }
   };
 
+  /* ============================================================
+     SEGUIR / DEJAR DE SEGUIR
+  ============================================================ */
   const toggleFollow = async () => {
     if (!idUsuario || !publicacion.cuenta?.idCuenta) return;
+
     try {
       if (isFollowing) {
         await dejarDeSeguirCuenta(idUsuario, publicacion.cuenta.idCuenta);
@@ -161,6 +179,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     }
   };
 
+  /* ============================================================
+     ENVIAR COMENTARIO
+  ============================================================ */
   const enviarComentario = async () => {
     if (!idUsuario || !nuevoComentario.trim()) return;
     try {
@@ -177,15 +198,36 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
     }
   };
 
+  /* ============================================================
+     PORTADA Y CARRUSEL MIXTO
+  ============================================================ */
+
+  // Imagen principal (portada)
+  const portada =
+    publicacion.multimedia?.find((m) => m.tipoArchivo === "imagen")?.url || null;
+
+  // Imágenes adicionales (sin la portada)
+  const imagenesAdicionales = publicacion.multimedia?.filter(
+    (m) => m.tipoArchivo === "imagen" && m.url !== portada
+  ) || [];
+
+  // Videos locales
+  const videosLocales = publicacion.multimedia?.filter(
+    (m) => m.tipoArchivo === "video"
+  ) || [];
+
+  // Carrusel mixto (imágenes adicionales + videos)
+  const carruselMixto = [...imagenesAdicionales, ...videosLocales];
+
   const resumen =
     publicacion.contenido.length > 220
       ? publicacion.contenido.slice(0, 220) + "..."
       : publicacion.contenido;
 
-  const portada =
-    publicacion.multimedia?.find((m) => m.tipoArchivo === "imagen")?.url || null;
-
-    return (
+  /* ============================================================
+     RENDER
+  ============================================================ */
+  return (
     <article className={styles.publicacionCard}>
       {/* Autor */}
       <div className={styles.publicacionAutor}>
@@ -196,35 +238,35 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
               : "/default-user.png"
           }
           className={styles.publicacionAutorFoto}
+          onClick={() =>
+            router.push(`/dashboard/cuenta/abrir-cuenta/${publicacion.cuenta.idCuenta}`)
+          }
+          style={{ cursor: "pointer" }}
         />
-        <div>
-          <p className={styles.publicacionAutorNombre}>
+
+        <div className={styles.publicacionAutorInfo}>
+          <p
+            className={styles.publicacionAutorNombre}
+            onClick={() =>
+              router.push(`/dashboard/cuenta/abrir-cuenta/${publicacion.cuenta.idCuenta}`)
+            }
+          >
             {publicacion.cuenta?.nombre || "Cuenta desconocida"}
           </p>
-          {/* Botón de seguir */}
-          {publicacion.cuenta?.idCuenta && (
-            <button
-              className={`${styles.botonAccion} ${isFollowing ? styles.botonAccionActivo : ""}`}
-              onClick={toggleFollow}
-            >
-              {isFollowing ? "Siguiendo" : "Seguir"}
-            </button>
-          )}
-          {publicacion.autor && (
-            <p className={styles.publicacionAutorSecundario}>
-              Autor:{" "}
-              <a
-                href={`/dashboard/perfil/${publicacion.autor.id}`}
-                className={styles.publicacionAutorLink}
-              >
-                {publicacion.autor.nombre || "Autor desconocido"}
-              </a>
-            </p>
-          )}
+
           <time className={styles.publicacionFecha}>
             {new Date(publicacion.fechaCreacion).toLocaleString()}
           </time>
         </div>
+
+        {publicacion.cuenta?.idCuenta && (
+          <button
+            className={isFollowing ? styles.botonSiguiendo : styles.botonSeguir}
+            onClick={toggleFollow}
+          >
+            {isFollowing ? "Siguiendo" : "Seguir"}
+          </button>
+        )}
       </div>
 
       {/* Portada */}
@@ -268,9 +310,9 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
         {expandida ? publicacion.contenido : resumen}
       </p>
 
-      {/* Carrusel */}
-      {expandida && publicacion.multimedia?.length > 0 && (
-        <MediaCarousel items={publicacion.multimedia} />
+      {/* Carrusel mixto */}
+      {expandida && carruselMixto.length > 0 && (
+        <MediaCarousel items={carruselMixto} />
       )}
 
       {/* YouTube */}
@@ -298,12 +340,14 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
           {expandida ? "Ver menos" : "Ver más"}
         </button>
 
-        {/* Botón de like */}
+        {/* Botón de like ❤️ / 🤍 */}
         <button
           className={`${styles.botonAccion} ${liked ? styles.botonAccionActivo : ""}`}
           onClick={toggleLike}
         >
-          <span className={styles.iconoAccion}>❤️</span>
+          <span className={styles.iconoAccion}>
+            {liked ? "❤️" : "🤍"}
+          </span>
           <span className={styles.contadorAccion}>{likeCount}</span>
         </button>
 
@@ -346,9 +390,14 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
                   <img
                     src={c.Usuario?.imagenPerfil || "/default-user.png"}
                     className={styles.comentarioAutorFoto}
+                    onClick={() => router.push(`/dashboard/perfil/${c.Usuario?.id}`)}
+                    style={{ cursor: "pointer" }}
                   />
                   <div>
-                    <p className={styles.comentarioAutor}>
+                    <p
+                      className={styles.comentarioAutor}
+                      onClick={() => router.push(`/dashboard/perfil/${c.Usuario?.id}`)}
+                    >
                       {c.Usuario?.nombre || "Usuario desconocido"}
                     </p>
                     <p className={styles.comentarioContenido}>{c.contenido}</p>
@@ -368,7 +417,7 @@ function PublicacionCard({ publicacion, expandida, onToggleExpand, cacheBust, id
 
 /* ============================================================
    PÁGINA PRINCIPAL: NoticiasPage
-   ============================================================ */
+============================================================ */
 export default function NoticiasPage() {
   const supabase = getSupabaseBrowserClient();
   const [idUsuario, setIdUsuario] = useState(null);
@@ -450,3 +499,5 @@ export default function NoticiasPage() {
     </div>
   );
 }
+
+
