@@ -574,6 +574,15 @@ export default function PrincipalCuenta() {
       >
         Ver perfil público
       </button>
+      <button
+        className={styles.botonVerPublico}
+        onClick={() =>
+          router.push(`/dashboard/cuenta/abrir-cuenta/${idCuenta}/editar-cuenta`)
+        }
+      >
+        Editar cuenta
+      </button>
+
 
       <button
         className={styles.botonSecundario}
