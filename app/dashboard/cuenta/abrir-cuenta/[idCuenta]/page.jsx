@@ -1,3 +1,5 @@
+//app\dashboard\cuenta\abrir-cuenta\[idCuenta]\page.jsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -155,15 +157,15 @@ function PublicacionIG({
       <div className={styles.publicacionAutor}>
         <img
           src={
-            autor?.imagenPerfil
-              ? `${autor.imagenPerfil}?t=${cacheBust}`
+            autor?.perfil?.imagenPerfil
+              ? `${autor.perfil.imagenPerfil}?t=${cacheBust}`
               : "/default-user.png"
           }
           className={styles.publicacionAutorFoto}
         />
         <div>
           <p className={styles.publicacionAutorNombre}>
-            {autor?.nombre || "Autor desconocido"}
+            {autor?.perfil?.nombre || "Autor desconocido"}
           </p>
           <time className={styles.publicacionFecha}>
             {new Date(publicacion.fechaCreacion).toLocaleString()}
@@ -630,21 +632,26 @@ export default function PerfilCuenta() {
           />
         ) : (
           <div className={styles.publicacionesLista}>
-            {publicaciones.map((p) => (
-              <PublicacionIG
-                key={p.idPublicacion}
-                publicacion={p}
-                autor={p.autor}
-                cacheBust={cacheBust}
-                user={user}
-                onToggleExpand={toggleExpansionPublicacion}
-                hashtags={hashtagsPorPublicacion[p.idPublicacion] || []}
-              />
-            ))}
+            {publicaciones.map((p) => {
+              const autor = miembros.find(
+                (m) => m.idUsuario === p.idUsuarioAutor
+              );
+
+              return (
+                <PublicacionIG
+                  key={p.idPublicacion}
+                  publicacion={p}
+                  autor={autor}
+                  cacheBust={cacheBust}
+                  user={user}
+                  onToggleExpand={toggleExpansionPublicacion}
+                  hashtags={hashtagsPorPublicacion[p.idPublicacion] || []}
+                />
+              );
+            })}
           </div>
         )}
       </SectionCard>
     </div>
   );
 }
-
